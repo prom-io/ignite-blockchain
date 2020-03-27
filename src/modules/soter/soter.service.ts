@@ -19,7 +19,7 @@ export class SoterService {
         return new TronWeb(this.configService.getTronConfig());
     }
 
-    public async add(fileBuffer: Buffer, fileMime: string, fileName: string) {
+    public async add(fileBuffer: Buffer, fileName: string) {
     // public async add(filePath: string) {
         const tronWeb = this.tronWebInstance();
         const requestUser = tronWeb.defaultAddress.base58;

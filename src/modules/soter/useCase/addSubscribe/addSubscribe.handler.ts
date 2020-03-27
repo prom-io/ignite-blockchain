@@ -10,14 +10,14 @@ export class AddSubscribeHandler {
     public async handle(command: Command) {
         let allSubscribes;
         try {
-            const allSubscribesData = await this.archiveService.getFileByName(command.userId + '/subscribes.json');
+            const allSubscribesData = await this.archiveService.getFileInZip(command.userId + '/subscribes.json');
             allSubscribes = JSON.parse(allSubscribesData.toString());
         } catch (e) {
             allSubscribes = {};
         }
         const fileName = command.userId + '/subscribes.json';
         allSubscribes[command.id] = command.data;
-        return await this.archiveService.archiveFile(
+        return await this.archiveService.fileToArchive(
             Buffer.from(JSON.stringify(allSubscribes)),
             fileName,
             fileName,

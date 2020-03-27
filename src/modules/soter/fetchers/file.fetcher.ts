@@ -10,10 +10,10 @@ export class FileFetcher {
         if (!jsonMap[id]) {
             throw new Error('File not found!');
         }
-        return await this.archiveService.getFileByName(jsonMap[id]);
+        return await this.archiveService.getFileInZip(jsonMap[id]);
     }
 
     public async test() {
-        return await this.archiveService.getFileByName('test/1.jpeg');
+        return await this.archiveService.getFileInZip('test/1.jpeg');
     }
 }

@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export class ConfigService {
     private readonly envConfig: { [key: string]: string };

@@ -1,6 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {ArchiveService} from '../../archive.service';
 import {Command} from './command';
+import {SyncTime} from '../../../../model/syncTime.entity';
 
 @Injectable()
 export class AddCommentHandler {
@@ -13,7 +14,7 @@ export class AddCommentHandler {
         }
         const jsonData = JSON.stringify(command.data);
         const fileBuffer = Buffer.from(jsonData);
-        return await this.archiveService.archiveFile(
+        return await this.archiveService.fileToArchive(
             fileBuffer,
             command.id,
             command.id + '.json',

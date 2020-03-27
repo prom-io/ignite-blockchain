@@ -12,19 +12,21 @@ import {FileFetcher} from './fetchers/file.fetcher';
 export class FileController {
     constructor(
         private readonly fileFetcher: FileFetcher,
+        private readonly uploadHandler: UploadHandler,
     ) {}
-
-    @Get('/test')
-    @Header('Content-Disposition', 'attachment;')
-    public async test(@Res() res: Response) {
-        const file = await this.fileFetcher.test();
-        return res.end(file);
-    }
 
     @Get('/:id')
     @Header('Content-Disposition', 'attachment;')
     public async getFileById(@Param('id') id: string, @Res() res: Response) {
         const file = await this.fileFetcher.getById(id);
         return res.end(file);
+    }
+    @Post('/upload')
+    @UseInterceptors(
+        FileInterceptor('file'),
+    )
+    public async uploadFile(@Body('id') id, @UploadedFile() file, @Res() res: Response) {
+        await this.uploadHandler.handle(new UploadCommand(file, id));
+        return res.status(200).send({message: 'File success uploaded!'});
     }
 }

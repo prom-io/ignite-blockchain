@@ -4,9 +4,10 @@ import Archiver = require('archiver');
 // @ts-ignore
 import AdmZip = require('adm-zip');
 import {SyncTime} from '../../model/syncTime.entity';
+import {zip} from 'rxjs';
+import {map} from 'rxjs/operators';
 
-@Injectable()
-export class ArchiveService {
+export class ArchiveNew {
     private readonly basePath: string = './files';
     private readonly mapName: string = 'map.json';
     private zipPath: string = '';
@@ -14,7 +15,7 @@ export class ArchiveService {
     public async fileToArchive(fileBuffer: Buffer, mapId: string, filePath: string, noRewriteFiles = []): Promise<void> {
         noRewriteFiles.push(this.mapName);
         const zipPath = await this.zipPathGenerate();
-        const zipCurrentFiles = await this.getFilesInZip();
+        const zipCurrentFiles = await this.getZipFiles();
         const jsonMap = await this.getMapInArchive();
 
         const output = fs.createWriteStream(zipPath);
@@ -43,9 +44,9 @@ export class ArchiveService {
 
         archive.pipe(output);
         zipCurrentFiles.forEach((zipEntry) => {
-            if (!noRewriteFiles.includes(zipEntry.entryName)) {
-                archive.append(zipEntry.getData(), {name: zipEntry.entryName});
-            }
+             if (!noRewriteFiles.includes(zipEntry.entryName)) {
+                 archive.append(zipEntry.getData(), {name: zipEntry.entryName});
+             }
         });
         jsonMap[mapId] = filePath;
         console.log(jsonMap);
@@ -53,19 +54,6 @@ export class ArchiveService {
         archive.append(bufferJson, { name: 'map.json' });
         archive.append(fileBuffer, { name: filePath });
         await archive.finalize();
-    }
-
-    public async getZipName(): Promise<string> {
-        let lastHash = await SyncTime.findLatestItem();
-        if (!lastHash) {
-            lastHash = new SyncTime();
-            // tslint:disable-next-line:new-parens
-            lastHash.hash = ((+new Date) + Math.random() * 100).toString(32);
-            lastHash.createdAt = new Date();
-            await lastHash.save();
-        }
-        lastHash = await SyncTime.findLatestItem();
-        return lastHash.hash + '.zip';
     }
 
     public async zipPathGenerate(): Promise<string> {
@@ -87,7 +75,7 @@ export class ArchiveService {
         return this.basePath + '/' + fileName + '.' + fileExt;
     }
 
-    public async getFilesInZip() {
+    public async getZipFiles() {
         const path = await this.zipPathGenerate();
         let zipEntries = [];
         if (fs.existsSync(path)) {
@@ -97,7 +85,7 @@ export class ArchiveService {
         return zipEntries;
     }
 
-    public async getFileInZip(fileName: string) {
+    public async getZipFile(fileName: string) {
         const path = await this.zipPathGenerate();
         if (!fs.existsSync(path)) {
             throw new Error('Zip file not created!');
@@ -112,7 +100,7 @@ export class ArchiveService {
 
     public async getMapInArchive() {
         try {
-            const buffer = await this.getFileInZip(this.mapName);
+            const buffer = await this.getZipFile(this.mapName);
             return JSON.parse(buffer.toString());
         } catch (e) {
             return {};

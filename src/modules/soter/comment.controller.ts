@@ -17,8 +17,12 @@ export class CommentController {
         @Body('data') data: object,
         @Res() res: Response,
     ) {
-        await this.addCommentHandler.handle(new AddCommentCommand(id, data));
-        return res.status(200).send({message: 'Comment success added!'});
+        try {
+            await this.addCommentHandler.handle(new AddCommentCommand(id, data));
+            return res.status(200).send({message: 'Comment success added!'});
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
     }
 
     @Get('/:id')

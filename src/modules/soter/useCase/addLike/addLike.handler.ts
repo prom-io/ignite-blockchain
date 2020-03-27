@@ -10,14 +10,14 @@ export class AddLikeHandler {
     public async handle(command: Command) {
         let allLikes;
         try {
-            const allLikesBuffer = await this.archiveService.getFileByName(command.commentId + '/likes.json');
+            const allLikesBuffer = await this.archiveService.getFileInZip(command.commentId + '/likes.json');
             allLikes = JSON.parse(allLikesBuffer.toString());
         } catch (e) {
             allLikes = {};
         }
         const fileName = command.commentId + '/likes.json';
         allLikes[command.id] = command.data;
-        return await this.archiveService.archiveFile(
+        return await this.archiveService.fileToArchive(
             Buffer.from(JSON.stringify(allLikes)),
             fileName,
             fileName,

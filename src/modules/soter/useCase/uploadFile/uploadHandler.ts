@@ -14,7 +14,7 @@ export class UploadHandler {
             throw new Error('Id exists!');
         }
         const fileType = await FileType.fromBuffer(command.file.buffer);
-        await this.archiveService.archiveFile(
+        await this.archiveService.fileToArchive(
             command.file.buffer,
             command.id,
             command.id + '.' + fileType.ext,
