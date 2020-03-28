@@ -8,6 +8,9 @@ export class SyncTime extends BaseEntity {
     @Column()
     hash: string;
 
+    @Column({name: 'btfs_cid', nullable: true})
+    btfsCid: string;
+
     @Column({type: 'timestamp', name: 'created_at'})
     createdAt: Date;
 

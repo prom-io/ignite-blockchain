@@ -21,9 +21,9 @@ export class LikeController {
         return res.status(200).send({message: 'Like success added!'});
     }
 
-    @Get('/comment/:commentId')
-    public async getLikeByCommentId(@Param('commentId') commentId: string, @Res() res: Response) {
-        const likes = await this.fileFetcher.getById(commentId + '/likes.json');
+    @Get('/comment/:cid/:commentId')
+    public async getLikeByCommentId(@Param('cid') cid: string, @Param('commentId') commentId: string, @Res() res: Response) {
+        const likes = await this.fileFetcher.getById(cid, commentId + '/likes.json');
         return res.send(JSON.parse(likes.toString()));
     }
 }

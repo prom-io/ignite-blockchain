@@ -17,6 +17,7 @@ import {AddLikeHandler} from './useCase/addLike/addLike.handler';
 import {SubscribeController} from './subscribe.controller';
 import {AddSubscribeHandler} from './useCase/addSubscribe/addSubscribe.handler';
 import {TasksService} from './TasksService';
+import {BtfsFetcher} from './fetchers/btfs.fetcher';
 // tslint:disable-next-line:no-var-requires
 const https = require('https');
 @Module({
@@ -39,6 +40,6 @@ const https = require('https');
     // }),
   ],
   controllers: [SubscribeController, LikeController, CommentController, FileController, SoterController],
-  providers: [TasksService, AddSubscribeHandler, AddLikeHandler, AddCommentHandler, FileFetcher, ArchiveService, SoterService, UploadHandler, ArchiveHandler, UnzipHandler],
+  providers: [BtfsFetcher, TasksService, AddSubscribeHandler, AddLikeHandler, AddCommentHandler, FileFetcher, ArchiveService, SoterService, UploadHandler, ArchiveHandler, UnzipHandler],
 })
 export class SoterModule {}

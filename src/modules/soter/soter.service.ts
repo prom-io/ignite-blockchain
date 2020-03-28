@@ -47,6 +47,10 @@ export class SoterService {
         }).toPromise();
     }
 
+    public async getFileByCid(cid: string) {
+        return await this.httpService.get('https://sandbox.btfssoter.io/btfs/' + cid, {responseType: 'arraybuffer'}).toPromise();
+    }
+
     public soterInstance(): Soter {
         const tronweb = new TronWeb(this.configService.getTronConfig());
         return new Soter({tronweb});

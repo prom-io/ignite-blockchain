@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import * as fs from 'fs';
 import Archiver = require('archiver');
 // @ts-ignore
@@ -7,12 +7,14 @@ import {SyncTime} from '../../model/syncTime.entity';
 
 @Injectable()
 export class ArchiveService {
+    private readonly logger = new Logger(ArchiveService.name);
     private readonly basePath: string = './files';
     private readonly mapName: string = 'map.json';
+    private readonly entitiesName: string = 'entities.json';
     private zipPath: string = '';
 
-    public async fileToArchive(fileBuffer: Buffer, mapId: string, filePath: string, noRewriteFiles = []): Promise<void> {
-        noRewriteFiles.push(this.mapName);
+    public async fileToArchive(fileBuffer: Buffer, entitiesMap: object, mapId: string, filePath: string, noRewriteFiles = []): Promise<void> {
+        noRewriteFiles.push(this.mapName, this.entitiesName);
         const zipPath = await this.zipPathGenerate();
         const zipCurrentFiles = await this.getFilesInZip();
         const jsonMap = await this.getMapInArchive();
@@ -21,23 +23,24 @@ export class ArchiveService {
         const archive = Archiver.create('zip');
 
         output.on('close', () => {
-            console.log(archive.pointer() + ' total bytes');
-            console.log('archiver has been finalized and the output file descriptor has closed.');
+            this.logger.debug(archive.pointer() + ' total bytes');
+            this.logger.debug('archiver has been finalized and the output file descriptor has closed.');
         });
         output.on('end', () => {
-            console.log('Data has been drained');
+            this.logger.debug('Data has been drained');
         });
 
         archive.on('warning', (err) => {
             if (err.code === 'ENOENT') {
-                // log warning
+                this.logger.warn(err.message);
             } else {
-                // throw error
+                this.logger.error(err.message);
                 throw err;
             }
         });
 
         archive.on('error', (err) => {
+            this.logger.error(err.message);
             throw err;
         });
 
@@ -48,9 +51,11 @@ export class ArchiveService {
             }
         });
         jsonMap[mapId] = filePath;
-        console.log(jsonMap);
+        this.logger.debug(jsonMap);
         const bufferJson = Buffer.from(JSON.stringify(jsonMap));
-        archive.append(bufferJson, { name: 'map.json' });
+        const entitiesBufferJson = Buffer.from(JSON.stringify(entitiesMap));
+        archive.append(bufferJson, { name: this.mapName });
+        archive.append(entitiesBufferJson, { name: this.entitiesName });
         archive.append(fileBuffer, { name: filePath });
         await archive.finalize();
     }
@@ -87,6 +92,10 @@ export class ArchiveService {
         return this.basePath + '/' + fileName + '.' + fileExt;
     }
 
+    public getEntitiesFileName() {
+        return this.entitiesName;
+    }
+
     public async getFilesInZip() {
         const path = await this.zipPathGenerate();
         let zipEntries = [];
@@ -113,6 +122,47 @@ export class ArchiveService {
     public async getMapInArchive() {
         try {
             const buffer = await this.getFileInZip(this.mapName);
+            return JSON.parse(buffer.toString());
+        } catch (e) {
+            return {};
+        }
+    }
+
+    public async getEntitiesInArchive() {
+        try {
+            const buffer = await this.getFileInZip(this.entitiesName);
+            return JSON.parse(buffer.toString());
+        } catch (e) {
+            return {};
+        }
+    }
+
+    public async getFilesInBuffer(fileBuffer: Buffer) {
+        const admZip = new AdmZip(fileBuffer);
+        return admZip.getEntries();
+    }
+
+    public async getFileInBuffer(fileName: string, fileBuffer: Buffer) {
+        const admZip = new AdmZip(fileBuffer);
+        const zipEntry = admZip.getEntry(fileName);
+        if (zipEntry) {
+            return zipEntry.getData();
+        }
+        throw new Error('File not found!');
+    }
+
+    public async getMapInBuffer(fileBuffer: Buffer) {
+        try {
+            const buffer = await this.getFileInBuffer(this.mapName, fileBuffer);
+            return JSON.parse(buffer.toString());
+        } catch (e) {
+            return {};
+        }
+    }
+
+    public async getEntitiesInBuffer(fileBuffer: Buffer) {
+        try {
+            const buffer = await this.getFileInBuffer(this.entitiesName, fileBuffer);
             return JSON.parse(buffer.toString());
         } catch (e) {
             return {};

@@ -28,8 +28,6 @@ export class TasksService {
                 const zipName = await this.archiveService.getZipName();
                 const file = fs.readFileSync(zipPath);
                 const soterResult = await this.soterService.add(file, zipName);
-                syncTime.synced = true;
-                await syncTime.save();
 
                 const lastHash = new SyncTime();
                 // tslint:disable-next-line:new-parens
@@ -37,10 +35,14 @@ export class TasksService {
                 lastHash.createdAt = new Date();
                 await lastHash.save();
 
-                this.logger.log('Soter data: ', JSON.stringify(soterResult.data));
-                this.logger.log('Sync completed!');
+                syncTime.synced = true;
+                syncTime.btfsCid = soterResult.data.cid;
+                await syncTime.save();
+
+                this.logger.debug('Soter data: ', JSON.stringify(soterResult.data));
+                this.logger.debug('Sync completed!');
             } else {
-                this.logger.log('Sync not started!');
+                this.logger.debug('Sync not started!');
             }
         } catch (e) {
             this.logger.error(e.message);

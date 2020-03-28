@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Header, Post, Res, UploadedFile, UseInterceptors} from '@nestjs/common';
+import {Body, Controller, Get, Header, Param, Post, Res, UploadedFile, UseInterceptors} from '@nestjs/common';
 import {FileInterceptor} from '@nestjs/platform-express';
 import { Response } from 'express';
 import {UploadHandler} from './useCase/uploadFile/uploadHandler';
@@ -6,6 +6,7 @@ import {ArchiveHandler} from './useCase/archiveFile/archiveHandler';
 import {UnzipHandler} from './useCase/unzipFile/unzipHandler';
 import {Command as UploadCommand} from './useCase/uploadFile/command';
 import * as fs from 'fs';
+import {BtfsFetcher} from './fetchers/btfs.fetcher';
 
 @Controller('/v1/soter')
 export class SoterController {
@@ -13,7 +14,18 @@ export class SoterController {
         private readonly uploadHandler: UploadHandler,
         private readonly archiveFileHandler: ArchiveHandler,
         private readonly unzipFileHandler: UnzipHandler,
+        private readonly btfsFetcher: BtfsFetcher,
     ) {}
+
+    @Get('/entities/:cid')
+    public async getEntities(@Param('cid') cid: string, @Res() res: Response) {
+        try {
+            const entities = await this.btfsFetcher.getEntities(cid);
+            return res.status(200).send(entities);
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
+    }
 
     @Post('/upload')
     @UseInterceptors(

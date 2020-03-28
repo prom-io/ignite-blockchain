@@ -15,10 +15,10 @@ export class FileController {
         private readonly uploadHandler: UploadHandler,
     ) {}
 
-    @Get('/:id')
+    @Get('/:cid/:id')
     @Header('Content-Disposition', 'attachment;')
-    public async getFileById(@Param('id') id: string, @Res() res: Response) {
-        const file = await this.fileFetcher.getById(id);
+    public async getFileById(@Param('cid') cid: string, @Param('id') id: string, @Res() res: Response) {
+        const file = await this.fileFetcher.getById(cid, id);
         return res.end(file);
     }
     @Post('/upload')

@@ -8,6 +8,7 @@ export class AddLikeHandler {
     }
 
     public async handle(command: Command) {
+        const entitiesMap = await this.archiveService.getEntitiesInArchive();
         let allLikes;
         try {
             const allLikesBuffer = await this.archiveService.getFileInZip(command.commentId + '/likes.json');
@@ -15,10 +16,14 @@ export class AddLikeHandler {
         } catch (e) {
             allLikes = {};
         }
+        const likes = entitiesMap.likes ?? [];
+        likes.push({commentId: command.commentId, id: command.id});
+        entitiesMap.likes = likes;
         const fileName = command.commentId + '/likes.json';
         allLikes[command.id] = command.data;
         return await this.archiveService.fileToArchive(
             Buffer.from(JSON.stringify(allLikes)),
+            entitiesMap,
             fileName,
             fileName,
             [fileName],

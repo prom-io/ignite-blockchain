@@ -9,13 +9,18 @@ export class AddCommentHandler {
 
     public async handle(command: Command) {
         const jsonMap = await this.archiveService.getMapInArchive();
+        const entitiesMap = await this.archiveService.getEntitiesInArchive();
         if (command.id in jsonMap) {
             throw new Error('Id exists!');
         }
+        const posts = entitiesMap.posts ?? [];
+        posts.push(command.id);
+        entitiesMap.posts = posts;
         const jsonData = JSON.stringify(command.data);
         const fileBuffer = Buffer.from(jsonData);
         return await this.archiveService.fileToArchive(
             fileBuffer,
+            entitiesMap,
             command.id,
             command.id + '.json',
         );

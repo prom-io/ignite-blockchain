@@ -25,9 +25,9 @@ export class CommentController {
         }
     }
 
-    @Get('/:id')
-    public async getCommentById(@Param('id') id: string, @Res() res: Response) {
-        const comment = await this.fileFetcher.getById(id);
+    @Get('/:cid/:id')
+    public async getCommentById(@Param('cid') cid: string, @Param('id') id: string, @Res() res: Response) {
+        const comment = await this.fileFetcher.getById(cid, id);
         return res.send(JSON.parse(comment.toString()));
     }
 }
