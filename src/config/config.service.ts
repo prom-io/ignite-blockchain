@@ -21,6 +21,10 @@ export class ConfigService {
         };
     }
 
+    getIgniteNodeAddress(): string {
+        return this.get('IGNITE_NODE_API')
+    }
+
     getTypeOrmConfig(): TypeOrmModuleOptions {
         return {
             type: 'postgres',

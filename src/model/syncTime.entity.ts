@@ -19,8 +19,7 @@ export class SyncTime extends BaseEntity {
 
     static findLatestItem() {
         return this.createQueryBuilder('sync_time')
-            .orderBy('created_at', 'DESC')
-            .limit(1)
+            .where('synced = false')
             .getOne();
     }
 }
