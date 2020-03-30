@@ -3,7 +3,7 @@ import {Response} from 'express';
 import {AddLikeHandler} from './useCase/addLike/addLike.handler';
 import {Command as AddLikeCommand} from './useCase/addLike/command';
 import {FileFetcher} from './fetchers/file.fetcher';
-@Controller('/v1/like')
+@Controller('/api/v1/like')
 export class LikeController {
     constructor(
         private readonly addLikeHandler: AddLikeHandler,
@@ -17,13 +17,21 @@ export class LikeController {
         @Body('data') data: object,
         @Res() res: Response,
     ) {
-        await this.addLikeHandler.handle(new AddLikeCommand(id, commentId, data));
-        return res.status(200).send({message: 'Like success added!'});
+        try {
+            await this.addLikeHandler.handle(new AddLikeCommand(id, commentId, data));
+            return res.status(200).send({message: 'Like success added!'});
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
     }
 
-    @Get('/comment/:cid/:commentId')
+    @Get('/:cid/:commentId')
     public async getLikeByCommentId(@Param('cid') cid: string, @Param('commentId') commentId: string, @Res() res: Response) {
-        const likes = await this.fileFetcher.getById(cid, commentId + '/likes.json');
-        return res.send(JSON.parse(likes.toString()));
+        try {
+            const likes = await this.fileFetcher.getById(cid, commentId + '/likes.json');
+            return res.send(JSON.parse(likes.toString()));
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
     }
 }

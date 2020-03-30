@@ -4,7 +4,7 @@ import {Command as AddSubscribeCommand} from './useCase/addSubscribe/command';
 import {Response} from 'express';
 import {FileFetcher} from './fetchers/file.fetcher';
 
-@Controller('/v1/subscribe')
+@Controller('/api/v1/subscribe')
 export class SubscribeController {
     constructor(
         private readonly addSubscribeHandler: AddSubscribeHandler,
@@ -19,13 +19,21 @@ export class SubscribeController {
         @Body('data') data: object,
         @Res() res: Response,
     ) {
-        await this.addSubscribeHandler.handle(new AddSubscribeCommand(id, userId, data));
-        return res.status(200).send({message: 'Subscribe success added!'});
+        try {
+            await this.addSubscribeHandler.handle(new AddSubscribeCommand(id, userId, data));
+            return res.status(200).send({message: 'Subscribe success added!'});
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
     }
 
-    @Get('/user/:cid/:userId')
+    @Get('/:cid/:userId')
     public async getLikeByCommentId(@Param('cid') cid: string, @Param('userId') userId: string, @Res() res: Response) {
-        const likes = await this.fileFetcher.getById(cid, userId + '/subscribes.json');
-        return res.send(JSON.parse(likes.toString()));
+        try {
+            const likes = await this.fileFetcher.getById(cid, userId + '/subscribes.json');
+            return res.send(JSON.parse(likes.toString()));
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
     }
 }

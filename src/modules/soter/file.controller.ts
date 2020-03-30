@@ -8,7 +8,7 @@ import {Command as UploadCommand} from './useCase/uploadFile/command';
 import * as fs from 'fs';
 import {FileFetcher} from './fetchers/file.fetcher';
 
-@Controller('/v1/file')
+@Controller('/api/v1/file')
 export class FileController {
     constructor(
         private readonly fileFetcher: FileFetcher,
@@ -26,7 +26,11 @@ export class FileController {
         FileInterceptor('file'),
     )
     public async uploadFile(@Body('id') id, @UploadedFile() file, @Res() res: Response) {
-        await this.uploadHandler.handle(new UploadCommand(file, id));
-        return res.status(200).send({message: 'File success uploaded!'});
+        try {
+            await this.uploadHandler.handle(new UploadCommand(file, id));
+            return res.status(200).send({message: 'File success uploaded!'});
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
     }
 }

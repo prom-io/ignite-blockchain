@@ -40,6 +40,18 @@ const https = require('https');
     // }),
   ],
   controllers: [SubscribeController, LikeController, CommentController, FileController, SoterController],
-  providers: [BtfsFetcher, TasksService, AddSubscribeHandler, AddLikeHandler, AddCommentHandler, FileFetcher, ArchiveService, SoterService, UploadHandler, ArchiveHandler, UnzipHandler],
+  providers: [
+    BtfsFetcher,
+    TasksService,
+    AddSubscribeHandler,
+    AddLikeHandler,
+    AddCommentHandler,
+    FileFetcher,
+    ArchiveService,
+    SoterService,
+    UploadHandler,
+    ArchiveHandler,
+    UnzipHandler,
+  ],
 })
 export class SoterModule {}

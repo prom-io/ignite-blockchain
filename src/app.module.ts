@@ -11,16 +11,10 @@ import {ScheduleModule} from '@nestjs/schedule';
 
 @Module({
   imports: [
-      TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: '127.0.0.1',
-          port: 5455,
-          username: 'app',
-          password: 'secret',
-          database: 'app',
-          entities: [SyncTime],
-          synchronize: true,
-          ssl: false,
+      TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            useFactory: (config: ConfigService) => config.getTypeOrmConfig(),
+            inject: [ConfigService],
       }),
       ScheduleModule.forRoot(),
       ConfigModule,

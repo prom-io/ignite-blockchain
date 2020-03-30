@@ -4,7 +4,7 @@ import {Command as AddCommentCommand} from './useCase/addComment/command';
 import {Response} from 'express';
 import {FileFetcher} from './fetchers/file.fetcher';
 
-@Controller('/v1/comment')
+@Controller('/api/v1/comment')
 export class CommentController {
     constructor(
         private readonly addCommentHandler: AddCommentHandler,
@@ -27,7 +27,11 @@ export class CommentController {
 
     @Get('/:cid/:id')
     public async getCommentById(@Param('cid') cid: string, @Param('id') id: string, @Res() res: Response) {
-        const comment = await this.fileFetcher.getById(cid, id);
-        return res.send(JSON.parse(comment.toString()));
+        try {
+            const comment = await this.fileFetcher.getById(cid, id);
+            return res.send(JSON.parse(comment.toString()));
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
     }
 }

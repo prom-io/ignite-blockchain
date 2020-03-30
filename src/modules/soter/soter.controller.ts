@@ -8,7 +8,7 @@ import {Command as UploadCommand} from './useCase/uploadFile/command';
 import * as fs from 'fs';
 import {BtfsFetcher} from './fetchers/btfs.fetcher';
 
-@Controller('/v1/soter')
+@Controller('/api/v1/soter')
 export class SoterController {
     constructor(
         private readonly uploadHandler: UploadHandler,
