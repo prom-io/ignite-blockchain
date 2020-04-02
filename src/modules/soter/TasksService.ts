@@ -17,7 +17,7 @@ export class TasksService {
     ) {
     }
 
-    @Cron('10 * * * * *')
+    @Cron('* * * * *')
     async handleCron() {
         const syncTime = await SyncTime.findLatestItem();
         try {
