@@ -18,6 +18,7 @@ export class LikeController {
         @Res() res: Response,
     ) {
         try {
+            console.log('Save Like!');
             await this.addLikeHandler.handle(new AddLikeCommand(id, commentId, data));
             return res.status(200).send({message: 'Like success added!'});
         } catch (e) {

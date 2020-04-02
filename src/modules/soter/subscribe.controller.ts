@@ -20,6 +20,7 @@ export class SubscribeController {
         @Res() res: Response,
     ) {
         try {
+            console.log('Save Subscribe!');
             await this.addSubscribeHandler.handle(new AddSubscribeCommand(id, userId, data));
             return res.status(200).send({message: 'Subscribe success added!'});
         } catch (e) {

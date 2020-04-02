@@ -18,6 +18,7 @@ export class CommentController {
         @Res() res: Response,
     ) {
         try {
+            console.log('Save Comment!');
             await this.addCommentHandler.handle(new AddCommentCommand(id, data));
             return res.status(200).send({message: 'Comment success added!'});
         } catch (e) {

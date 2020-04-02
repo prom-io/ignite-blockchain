@@ -27,6 +27,7 @@ export class FileController {
     )
     public async uploadFile(@Body('id') id, @UploadedFile() file, @Res() res: Response) {
         try {
+            console.log('Save File!');
             await this.uploadHandler.handle(new UploadCommand(file, id));
             return res.status(200).send({message: 'File success uploaded!'});
         } catch (e) {

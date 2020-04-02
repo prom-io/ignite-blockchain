@@ -22,6 +22,7 @@ export class TasksService {
         const syncTime = await SyncTime.findLatestItem();
         try {
             if (syncTime && syncTime.synced === false) {
+                this.logger.debug('Sync started!');
                 const zipPath = await this.archiveService.zipPathGenerate();
 
                 if (!fs.existsSync(zipPath)) {
@@ -30,29 +31,30 @@ export class TasksService {
 
                 const zipName = await this.archiveService.getZipName();
                 const file = fs.readFileSync(zipPath);
+                this.logger.debug('Read zip file complete!');
                 const soterResult = await this.soterService.add(file, zipName);
-
+                this.logger.debug('Zip file to Btfs saved!');
                 const lastHash = new SyncTime();
                 // tslint:disable-next-line:new-parens
                 lastHash.hash = ((+new Date) + Math.random() * 100).toString(32);
                 lastHash.createdAt = new Date();
                 await lastHash.save();
+                this.logger.debug('New zip file name generated!');
 
                 syncTime.synced = true;
                 syncTime.btfsCid = soterResult.data.cid;
                 await syncTime.save();
 
                 const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
-                    btfsCid: soterResult.data.cid
+                    btfsCid: soterResult.data.cid,
                 }, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
                 }).toPromise();
 
-
-                this.logger.debug('Soter data: ', JSON.stringify(soterResult.data));
-                this.logger.debug('Ignite node response status: ', String(responseIgniteNode.status));
+                this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
+                this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
                 this.logger.debug('Sync completed!');
             } else {
                 this.logger.debug('Sync not started!');
