@@ -19,7 +19,7 @@ export class UploadHandler {
         entitiesMap.images = images;
 
         const fileType = await FileType.fromBuffer(command.file.buffer);
-        await this.archiveService.fileToArchive(
+        await this.archiveService.addFile(
             command.file.buffer,
             entitiesMap,
             command.id,

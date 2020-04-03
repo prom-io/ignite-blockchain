@@ -13,6 +13,24 @@ export class ArchiveService {
     private readonly entitiesName: string = 'entities.json';
     private zipPath: string = '';
 
+    public async addFile(fileBuffer: Buffer, entitiesMap: object, mapId: string, filePath: string, noRewriteFiles = []): Promise<void> {
+        const path = await this.zipPathGenerate();
+        if (!fs.existsSync(path)) {
+            this.logger.debug('Archiver');
+            return await this.fileToArchive(fileBuffer, entitiesMap, mapId, filePath, noRewriteFiles);
+        }
+        this.logger.debug('Adm zip');
+        const jsonMap = await this.getMapInArchive();
+        const admZip = new AdmZip(path);
+        jsonMap[mapId] = filePath;
+        this.logger.debug(jsonMap);
+        this.logger.debug(entitiesMap);
+        admZip.addFile(filePath, fileBuffer);
+        admZip.updateFile(this.mapName, Buffer.from(JSON.stringify(jsonMap)));
+        admZip.updateFile(this.entitiesName, Buffer.from(JSON.stringify(entitiesMap)));
+        admZip.writeZip(path);
+    }
+
     public async fileToArchive(fileBuffer: Buffer, entitiesMap: object, mapId: string, filePath: string, noRewriteFiles = []): Promise<void> {
         noRewriteFiles.push(this.mapName, this.entitiesName);
         const zipPath = await this.zipPathGenerate();

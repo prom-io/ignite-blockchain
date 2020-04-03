@@ -21,7 +21,7 @@ export class AddLikeHandler {
         entitiesMap.likes = likes;
         const fileName = command.commentId + '/likes.json';
         allLikes[command.id] = command.data;
-        return await this.archiveService.fileToArchive(
+        return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allLikes)),
             entitiesMap,
             fileName,

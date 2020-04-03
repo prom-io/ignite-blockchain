@@ -18,7 +18,7 @@ export class AddCommentHandler {
         entitiesMap.posts = posts;
         const jsonData = JSON.stringify(command.data);
         const fileBuffer = Buffer.from(jsonData);
-        return await this.archiveService.fileToArchive(
+        return await this.archiveService.addFile(
             fileBuffer,
             entitiesMap,
             command.id,

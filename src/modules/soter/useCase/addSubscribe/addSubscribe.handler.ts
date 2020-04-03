@@ -21,7 +21,7 @@ export class AddSubscribeHandler {
         entitiesMap.subscribes = subscribes;
         const fileName = command.userId + '/subscribes.json';
         allSubscribes[command.id] = command.data;
-        return await this.archiveService.fileToArchive(
+        return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allSubscribes)),
             entitiesMap,
             fileName,
