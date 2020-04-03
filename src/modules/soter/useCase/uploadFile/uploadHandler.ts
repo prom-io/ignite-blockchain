@@ -2,6 +2,7 @@ import {Injectable, Logger} from '@nestjs/common';
 import {Command} from './command';
 import {ArchiveService} from '../../archive.service';
 import {MapService} from '../../map.service';
+import {SyncTime} from '../../../../model/syncTime.entity';
 // tslint:disable-next-line:no-var-requires
 const FileType = require('file-type');
 
@@ -24,13 +25,14 @@ export class UploadHandler {
         // images.push(command.id);
 
         const lastHash = await this.mapService.getLastHash();
+
         // @ts-ignore
         if (!lastHash.entityMap.images) {
             // @ts-ignore
             lastHash.entityMap.images = [];
         }
         // @ts-ignore
-        lastHash.entityMap.images.push(command.id); // = Array.from(new Set(images));
+        lastHash.entityMap['images'].push(command.id); // = Array.from(new Set(images));
         await lastHash.save();
         this.logger.debug(lastHash.entityMap);
         const fileType = await FileType.fromBuffer(command.file.buffer);

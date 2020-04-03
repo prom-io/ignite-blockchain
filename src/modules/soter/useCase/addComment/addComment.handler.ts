@@ -29,7 +29,7 @@ export class AddCommentHandler {
         // const posts = lastHash.entityMap.posts ?? [];
         // posts.push(command.id);
         // @ts-ignore
-        lastHash.entityMap.posts.push(command.id); // = Array.from(new Set(posts));
+        lastHash.entityMap['posts'].push(command.id); // = Array.from(new Set(posts));
         await lastHash.save();
         this.logger.debug(lastHash.entityMap);
         const jsonData = JSON.stringify(command.data);
