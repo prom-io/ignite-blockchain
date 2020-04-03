@@ -23,10 +23,15 @@ export class AddLikeHandler {
         }
 
         // @ts-ignore
-        const likes = lastHash.entityMap.likes ?? [];
-        likes.push({commentId: command.commentId, id: command.id});
+        // const likes = lastHash.entityMap.likes ?? [];
+
+        if (!lastHash.entityMap.likes) {
+            // @ts-ignore
+            lastHash.entityMap.likes = [];
+        }
+
         // @ts-ignore
-        lastHash.entityMap.likes = likes;
+        lastHash.entityMap.likes.push({commentId: command.commentId, id: command.id});
         await lastHash.save();
         console.log(lastHash.entityMap);
         allLikes[command.id] = command.data;

@@ -18,12 +18,17 @@ export class UploadHandler {
         // if (command.id in jsonMap) {
         //     throw new Error('Id exists!');
         // }
+        // const images = lastHash.entityMap.images ?? [];
+        // images.push(command.id);
+
         const lastHash = await this.mapService.getLastHash();
         // @ts-ignore
-        const images = lastHash.entityMap.images ?? [];
-        images.push(command.id);
+        if (!lastHash.entityMap.images) {
+            // @ts-ignore
+            lastHash.entityMap.images = [];
+        }
         // @ts-ignore
-        lastHash.entityMap.images = Array.from(new Set(images));
+        lastHash.entityMap.images.push(command.id); // = Array.from(new Set(images));
         await lastHash.save();
         console.log(lastHash.entityMap);
         const fileType = await FileType.fromBuffer(command.file.buffer);

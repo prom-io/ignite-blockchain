@@ -22,10 +22,15 @@ export class AddSubscribeHandler {
             allSubscribes = {};
         }
         // @ts-ignore
-        const subscribes = lastHash.entityMap.subscribes ?? [];
-        subscribes.push({userId: command.userId, id: command.id});
+        // const subscribes = lastHash.entityMap.subscribes ?? [];
+        if (!lastHash.entityMap.subscribes) {
+            // @ts-ignore
+            lastHash.entityMap.subscribes = [];
+        }
         // @ts-ignore
-        lastHash.entityMap.subscribes = subscribes;
+        lastHash.entityMap.subscribes.push({userId: command.userId, id: command.id});
+        // @ts-ignore
+        // lastHash.entityMap.subscribes = subscribes;
         await lastHash.save();
         console.log(lastHash.entityMap);
         allSubscribes[command.id] = command.data;
