@@ -25,7 +25,6 @@ export class TasksService {
         const syncTime = await SyncTime.findLatestItem();
         try {
             if (syncTime && syncTime.synced === false) {
-                this.logger.debug('Sync started!');
                 const admZip = new AdmZip();
                 const zipPath = `./files/${syncTime.hash}.zip`;
                 admZip.addLocalFolder(await this.archiveService.generateDirPath(), '/');
@@ -34,6 +33,7 @@ export class TasksService {
                 admZip.writeZip(zipPath);
 
                 const file = fs.readFileSync(zipPath);
+                this.logger.debug('Sync started!');
                 const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
                 this.logger.debug('Zip file to Btfs saved!');
 
@@ -48,19 +48,18 @@ export class TasksService {
                 syncTime.btfsCid = soterResult.data.cid;
                 await syncTime.save();
 
-                // const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
-                //     btfsCid: soterResult.data.cid,
-                // }, {
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //     },
-                // }).toPromise();
+                const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
+                    btfsCid: soterResult.data.cid,
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).toPromise();
 
                 this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
-                // this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
+                this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
                 this.logger.debug('Sync completed!');
 
-                this.logger.debug('Sync Completed!');
                 // this.logger.debug('Sync started!');
                 // // const zipPath = await this.archiveService.zipPathGenerate();
                 //

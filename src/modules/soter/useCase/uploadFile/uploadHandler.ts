@@ -25,6 +25,7 @@ export class UploadHandler {
         // @ts-ignore
         lastHash.entityMap.images = Array.from(new Set(images));
         await lastHash.save();
+        console.log(lastHash.entityMap);
         const fileType = await FileType.fromBuffer(command.file.buffer);
         await this.archiveService.addFile(
             command.file.buffer,

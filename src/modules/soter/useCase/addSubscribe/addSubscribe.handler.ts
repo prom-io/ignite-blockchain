@@ -27,6 +27,7 @@ export class AddSubscribeHandler {
         // @ts-ignore
         lastHash.entityMap.subscribes = subscribes;
         await lastHash.save();
+        console.log(lastHash.entityMap);
         allSubscribes[command.id] = command.data;
         return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allSubscribes)),
