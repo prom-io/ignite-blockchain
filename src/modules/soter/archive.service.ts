@@ -15,19 +15,35 @@ export class ArchiveService {
 
     public async addFile(fileBuffer: Buffer, entitiesMap: object, mapId: string, filePath: string, noRewriteFiles = []): Promise<void> {
         const path = await this.zipPathGenerate();
+        let admZip;
         if (!fs.existsSync(path)) {
-            this.logger.debug('Archiver');
-            return await this.fileToArchive(fileBuffer, entitiesMap, mapId, filePath, noRewriteFiles);
+            // this.logger.debug('Archiver');
+            // return await this.fileToArchive(fileBuffer, entitiesMap, mapId, filePath, noRewriteFiles);
+            admZip = new AdmZip();
+        } else {
+            admZip = new AdmZip(path);
         }
         this.logger.debug('Adm zip');
         const jsonMap = await this.getMapInArchive();
-        const admZip = new AdmZip(path);
         jsonMap[mapId] = filePath;
         this.logger.debug(jsonMap);
         this.logger.debug(entitiesMap);
         admZip.addFile(filePath, fileBuffer);
-        admZip.updateFile(this.mapName, Buffer.from(JSON.stringify(jsonMap)));
-        admZip.updateFile(this.entitiesName, Buffer.from(JSON.stringify(entitiesMap)));
+
+        const mapEntry = admZip.getEntry(this.mapName);
+        if (mapEntry) {
+            admZip.updateFile(this.mapName, Buffer.from(JSON.stringify(jsonMap)));
+        } else {
+            admZip.addFile(this.mapName, Buffer.from(JSON.stringify(jsonMap)));
+        }
+
+        const mapEntities = admZip.getEntry(this.entitiesName);
+        if (mapEntities) {
+            admZip.updateFile(this.entitiesName, Buffer.from(JSON.stringify(entitiesMap)));
+        } else {
+            admZip.addFile(this.entitiesName, Buffer.from(JSON.stringify(entitiesMap)));
+        }
+
         admZip.writeZip(path);
     }
 
