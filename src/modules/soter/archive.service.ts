@@ -26,7 +26,7 @@ export class ArchiveService {
             lastHash.fileMap[mapId] = filePath;
             await lastHash.save();
             await fse.outputFile(path, fileBuffer);
-            await this.mapService.updateMaps(lastHash.fileMap, entitiesMap);
+            // await this.mapService.updateMaps(lastHash.fileMap, entitiesMap);
             this.logger.debug('File success saved!');
         } catch (e) {
             this.logger.error(e.message);
