@@ -27,7 +27,7 @@ export class AddLikeHandler {
         likes.push({commentId: command.commentId, id: command.id});
         // @ts-ignore
         lastHash.entityMap.likes = likes;
-
+        await lastHash.save();
         allLikes[command.id] = command.data;
         return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allLikes)),

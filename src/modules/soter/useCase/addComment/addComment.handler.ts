@@ -23,6 +23,7 @@ export class AddCommentHandler {
         posts.push(command.id);
         // @ts-ignore
         lastHash.entityMap.posts = Array.from(new Set(posts));
+        await lastHash.save();
         const jsonData = JSON.stringify(command.data);
         const fileBuffer = Buffer.from(jsonData);
         return await this.archiveService.addFile(

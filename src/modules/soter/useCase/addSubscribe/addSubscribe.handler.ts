@@ -26,7 +26,7 @@ export class AddSubscribeHandler {
         subscribes.push({userId: command.userId, id: command.id});
         // @ts-ignore
         lastHash.entityMap.subscribes = subscribes;
-
+        await lastHash.save();
         allSubscribes[command.id] = command.data;
         return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allSubscribes)),
