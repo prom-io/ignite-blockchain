@@ -221,7 +221,13 @@ export class ArchiveService {
 
     public async getFileInBuffer(fileName: string, fileBuffer: Buffer) {
         const admZip = new AdmZip(fileBuffer);
-        const zipEntry = admZip.getEntry(fileName);
+        let zipEntry = admZip.getEntry(fileName);
+        if (zipEntry) {
+            return zipEntry.getData();
+        }
+
+        zipEntry = admZip.getEntry('/' + fileName);
+
         if (zipEntry) {
             return zipEntry.getData();
         }

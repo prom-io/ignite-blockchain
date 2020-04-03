@@ -33,7 +33,6 @@ export class UploadHandler {
         }
         // @ts-ignore
         lastHash.entityMap['images'].push(command.id); // = Array.from(new Set(images));
-        await lastHash.save();
         this.logger.debug(lastHash.entityMap);
         const fileType = await FileType.fromBuffer(command.file.buffer);
         await this.archiveService.addFile(

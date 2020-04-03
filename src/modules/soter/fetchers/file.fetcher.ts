@@ -12,9 +12,11 @@ export class FileFetcher {
     public async getById(cid: string, id: string) {
         const file = await this.soterService.getFileByCid(cid);
         const jsonMap = await this.archiveService.getMapInBuffer(file.data);
+
         if (!jsonMap[id]) {
             throw new Error('File not found!');
         }
+
         return await this.archiveService.getFileInBuffer(jsonMap[id], file.data);
     }
 
