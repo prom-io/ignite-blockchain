@@ -23,6 +23,18 @@ export class SyncTime extends BaseEntity {
     @Column({type: 'jsonb', name: 'entity_map', default: {}})
     entityMap: object;
 
+    @Column({type: 'jsonb', name: 'entity_map_posts', default: {}})
+    entityMapPosts: object;
+
+    @Column({type: 'jsonb', name: 'entity_map_likes', default: {}})
+    entityMapLikes: object;
+
+    @Column({type: 'jsonb', name: 'entity_map_subscribes', default: {}})
+    entityMapSubscribes: object;
+
+    @Column({type: 'jsonb', name: 'entity_map_files', default: {}})
+    entityMapFiles: object;
+
     static findLatestItem() {
         return this.createQueryBuilder('sync_time')
             .where('synced = false')

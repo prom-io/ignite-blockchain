@@ -25,20 +25,19 @@ export class AddSubscribeHandler {
         }
         // @ts-ignore
         // const subscribes = lastHash.entityMap.subscribes ?? [];
-        if (!lastHash.entityMap.subscribes) {
+        if (!lastHash.entityMapSubscribes.subscribes) {
             // @ts-ignore
-            lastHash.entityMap.subscribes = [];
+            lastHash.entityMapSubscribes.subscribes = [];
         }
         // @ts-ignore
-        lastHash.entityMap.subscribes.push({userId: command.userId, id: command.id});
+        lastHash.entityMapSubscribes.subscribes.push({userId: command.userId, id: command.id});
         // @ts-ignore
         // lastHash.entityMap.subscribes = subscribes;
         await lastHash.save();
-        this.logger.debug(lastHash.entityMap);
+        this.logger.debug(lastHash.entityMapSubscribes);
         allSubscribes[command.id] = command.data;
         return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allSubscribes)),
-            lastHash.entityMap,
             fileName,
             fileName,
         );

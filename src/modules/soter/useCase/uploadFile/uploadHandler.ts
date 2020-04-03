@@ -27,17 +27,17 @@ export class UploadHandler {
         const lastHash = await this.mapService.getLastHash();
 
         // @ts-ignore
-        if (!lastHash.entityMap.images) {
+        if (!lastHash.entityMapFiles.images) {
             // @ts-ignore
-            lastHash.entityMap.images = [];
+            lastHash.entityMapFiles.images = [];
         }
         // @ts-ignore
-        lastHash.entityMap['images'].push(command.id); // = Array.from(new Set(images));
-        this.logger.debug(lastHash.entityMap);
+        lastHash.entityMapFiles.images.push(command.id); // = Array.from(new Set(images));
+        await lastHash.save();
+        this.logger.debug(lastHash.entityMapFiles);
         const fileType = await FileType.fromBuffer(command.file.buffer);
         await this.archiveService.addFile(
             command.file.buffer,
-            lastHash.entityMap,
             command.id,
             command.id + '.' + fileType.ext,
         );

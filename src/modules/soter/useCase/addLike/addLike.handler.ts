@@ -27,19 +27,18 @@ export class AddLikeHandler {
         // @ts-ignore
         // const likes = lastHash.entityMap.likes ?? [];
 
-        if (!lastHash.entityMap.likes) {
+        if (!lastHash.entityMapLikes.likes) {
             // @ts-ignore
-            lastHash.entityMap.likes = [];
+            lastHash.entityMapLikes.likes = [];
         }
 
         // @ts-ignore
-        lastHash.entityMap.likes.push({commentId: command.commentId, id: command.id});
+        lastHash.entityMapLikes.likes.push({commentId: command.commentId, id: command.id});
         await lastHash.save();
-        this.logger.debug(lastHash.entityMap);
+        this.logger.debug(lastHash.entityMapLikes);
         allLikes[command.id] = command.data;
         return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allLikes)),
-            lastHash.entityMap,
             fileName,
             fileName,
         );

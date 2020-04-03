@@ -21,21 +21,21 @@ export class AddCommentHandler {
         // }
         const lastHash = await this.mapService.getLastHash();
         // @ts-ignore
-        if (!lastHash.entityMap.posts) {
+        if (!lastHash.entityMapPosts.posts) {
             // @ts-ignore
-            lastHash.entityMap.posts = [];
+            lastHash.entityMapPosts.posts = [];
         }
 
         // const posts = lastHash.entityMap.posts ?? [];
         // posts.push(command.id);
         // @ts-ignore
-        lastHash.entityMap['posts'].push(command.id); // = Array.from(new Set(posts));
-        this.logger.debug(lastHash.entityMap);
+        lastHash.entityMapPosts.posts.push(command.id); // = Array.from(new Set(posts));
+        await lastHash.save();
+        this.logger.debug(lastHash.entityMapPosts);
         const jsonData = JSON.stringify(command.data);
         const fileBuffer = Buffer.from(jsonData);
         return await this.archiveService.addFile(
             fileBuffer,
-            lastHash.entityMap,
             command.id,
             command.id + '.json',
         );

@@ -19,14 +19,13 @@ export class ArchiveService {
     constructor(private readonly mapService: MapService) {
     }
 
-    public async addFile(fileBuffer: Buffer, entitiesMap: object, mapId: string, filePath: string, noRewriteFiles = []): Promise<void> {
+    public async addFile(fileBuffer: Buffer, mapId: string, filePath: string): Promise<void> {
         try {
             const path = await this.generatePath(filePath);
             const lastHash = await this.mapService.getLastHash();
             lastHash.fileMap[mapId] = filePath;
             await lastHash.save();
             await fse.outputFile(path, fileBuffer);
-            // await this.mapService.updateMaps(lastHash.fileMap, entitiesMap);
             this.logger.debug('File success saved!');
         } catch (e) {
             this.logger.error(e.message);

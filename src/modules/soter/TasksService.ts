@@ -27,9 +27,10 @@ export class TasksService {
             if (syncTime && syncTime.synced === false) {
                 const admZip = new AdmZip();
                 const zipPath = `./files/${syncTime.hash}.zip`;
+                const entityMap = Object.assign(syncTime.entityMapFiles, syncTime.entityMapSubscribes, syncTime.entityMapLikes, syncTime.entityMapPosts);
                 admZip.addLocalFolder(await this.archiveService.generateDirPath(), '/');
                 admZip.addFile('map.json', Buffer.from(JSON.stringify(syncTime.fileMap)));
-                admZip.addFile('entities.json', Buffer.from(JSON.stringify(syncTime.entityMap)));
+                admZip.addFile('entities.json', Buffer.from(JSON.stringify(entityMap)));
                 admZip.writeZip(zipPath);
 
                 const file = fs.readFileSync(zipPath);
