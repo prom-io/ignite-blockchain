@@ -17,6 +17,12 @@ export class SyncTime extends BaseEntity {
     @Column({type: 'boolean', default: false})
     synced: boolean;
 
+    @Column({type: 'jsonb', name: 'file_map', default: {}})
+    fileMap: object;
+
+    @Column({type: 'jsonb', name: 'entity_map', default: {}})
+    entityMap: object;
+
     static findLatestItem() {
         return this.createQueryBuilder('sync_time')
             .where('synced = false')

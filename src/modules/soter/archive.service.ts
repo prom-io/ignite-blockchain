@@ -1,9 +1,12 @@
 import {Injectable, Logger} from '@nestjs/common';
 import * as fs from 'fs';
+import * as fse from 'fs-extra';
+// const fse = require('fs-extra');
 import Archiver = require('archiver');
 // @ts-ignore
 import AdmZip = require('adm-zip');
 import {SyncTime} from '../../model/syncTime.entity';
+import {MapService} from './map.service';
 
 @Injectable()
 export class ArchiveService {
@@ -13,38 +16,80 @@ export class ArchiveService {
     private readonly entitiesName: string = 'entities.json';
     private zipPath: string = '';
 
+    constructor(private readonly mapService: MapService) {
+    }
+
     public async addFile(fileBuffer: Buffer, entitiesMap: object, mapId: string, filePath: string, noRewriteFiles = []): Promise<void> {
-        const path = await this.zipPathGenerate();
-        let admZip;
+        try {
+            const path = await this.generatePath(filePath);
+            const lastHash = await this.mapService.getLastHash();
+            lastHash.fileMap[mapId] = filePath;
+            await fse.outputFile(path, fileBuffer);
+            await this.mapService.updateMaps(lastHash.fileMap, entitiesMap);
+            this.logger.debug('File success saved!');
+        } catch (e) {
+            this.logger.error(e.message);
+        }
+
+        // const lastHash = await this.getLastHash();
+        // const dirPath = this.basePath + '/' + lastHash;
+        // if (!fs.existsSync(dirPath)) {
+        //     fs.mkdirSync(dirPath);
+        // }
+
+        // fs.writeFile(path, fileBuffer,(err) => {
+        //     if (err) { throw err; }
+        //     this.logger.debug('Results Received');
+        // });
+        // const path = await this.zipPathGenerate();
+        // let admZip;
+        // if (!fs.existsSync(path)) {
+        //     // this.logger.debug('Archiver');
+        //     // return await this.fileToArchive(fileBuffer, entitiesMap, mapId, filePath, noRewriteFiles);
+        //     admZip = new AdmZip();
+        // } else {
+        //     admZip = new AdmZip(path);
+        // }
+        // this.logger.debug('Adm zip');
+        // const jsonMap = await this.getMapInArchive();
+        // jsonMap[mapId] = filePath;
+        // this.logger.debug(jsonMap);
+        // this.logger.debug(entitiesMap);
+        // admZip.addFile(filePath, fileBuffer);
+        //
+        // const mapEntry = admZip.getEntry(this.mapName);
+        // if (mapEntry) {
+        //     admZip.updateFile(this.mapName, Buffer.from(JSON.stringify(jsonMap)));
+        // } else {
+        //     admZip.addFile(this.mapName, Buffer.from(JSON.stringify(jsonMap)));
+        // }
+        //
+        // const mapEntities = admZip.getEntry(this.entitiesName);
+        // if (mapEntities) {
+        //     admZip.updateFile(this.entitiesName, Buffer.from(JSON.stringify(entitiesMap)));
+        // } else {
+        //     admZip.addFile(this.entitiesName, Buffer.from(JSON.stringify(entitiesMap)));
+        // }
+        //
+        // admZip.writeZip(path);
+    }
+
+    public async getFile(filePath: string) {
+        const path = await this.generatePath(filePath);
         if (!fs.existsSync(path)) {
-            // this.logger.debug('Archiver');
-            // return await this.fileToArchive(fileBuffer, entitiesMap, mapId, filePath, noRewriteFiles);
-            admZip = new AdmZip();
-        } else {
-            admZip = new AdmZip(path);
+            throw new Error('File not created!');
         }
-        this.logger.debug('Adm zip');
-        const jsonMap = await this.getMapInArchive();
-        jsonMap[mapId] = filePath;
-        this.logger.debug(jsonMap);
-        this.logger.debug(entitiesMap);
-        admZip.addFile(filePath, fileBuffer);
+        return fs.readFileSync(path);
+    }
 
-        const mapEntry = admZip.getEntry(this.mapName);
-        if (mapEntry) {
-            admZip.updateFile(this.mapName, Buffer.from(JSON.stringify(jsonMap)));
-        } else {
-            admZip.addFile(this.mapName, Buffer.from(JSON.stringify(jsonMap)));
-        }
+    public async generatePath(filePath: string): Promise<any> {
+        const lastHash = await this.getLastHash();
+        return this.basePath + '/' + lastHash + '/' + filePath;
+    }
 
-        const mapEntities = admZip.getEntry(this.entitiesName);
-        if (mapEntities) {
-            admZip.updateFile(this.entitiesName, Buffer.from(JSON.stringify(entitiesMap)));
-        } else {
-            admZip.addFile(this.entitiesName, Buffer.from(JSON.stringify(entitiesMap)));
-        }
-
-        admZip.writeZip(path);
+    public async generateDirPath(): Promise<string> {
+        const lastHash = await this.mapService.getLastHash();
+        return this.basePath + '/' + lastHash.hash;
     }
 
     public async fileToArchive(fileBuffer: Buffer, entitiesMap: object, mapId: string, filePath: string, noRewriteFiles = []): Promise<void> {
@@ -94,7 +139,7 @@ export class ArchiveService {
         await archive.finalize();
     }
 
-    public async getZipName(): Promise<string> {
+    public async getLastHash(): Promise<string> {
         let lastHash = await SyncTime.findLatestItem();
         if (!lastHash) {
             lastHash = new SyncTime();
@@ -104,20 +149,17 @@ export class ArchiveService {
             await lastHash.save();
         }
         lastHash = await SyncTime.findLatestItem();
-        return lastHash.hash + '.zip';
+        return lastHash.hash;
+    }
+
+    public async getZipName(): Promise<string> {
+        const lastHash = await this.getLastHash();
+        return lastHash + '.zip';
     }
 
     public async zipPathGenerate(): Promise<string> {
-        let lastHash = await SyncTime.findLatestItem();
-        if (!lastHash) {
-            lastHash = new SyncTime();
-            // tslint:disable-next-line:new-parens
-            lastHash.hash = ((+new Date) + Math.random() * 100).toString(32);
-            lastHash.createdAt = new Date();
-            await lastHash.save();
-        }
-        lastHash = await SyncTime.findLatestItem();
-        const path = this.getPath(lastHash.hash, 'zip');
+        const lastHash = await this.getLastHash();
+        const path = this.getPath(lastHash, 'zip');
         this.zipPath = path;
         return path;
     }

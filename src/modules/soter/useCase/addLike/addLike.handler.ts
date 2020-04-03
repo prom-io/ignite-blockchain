@@ -1,32 +1,39 @@
 import {Injectable} from '@nestjs/common';
 import {Command} from './command';
 import {ArchiveService} from '../../archive.service';
+import {MapService} from '../../map.service';
 
 @Injectable()
 export class AddLikeHandler {
-    constructor(private readonly archiveService: ArchiveService) {
-    }
+    constructor(
+        private readonly mapService: MapService,
+        private readonly archiveService: ArchiveService,
+    ) {}
 
     public async handle(command: Command) {
-        const entitiesMap = await this.archiveService.getEntitiesInArchive();
+        // const entitiesMap = await this.archiveService.getEntitiesInArchive();
+        const lastHash = await this.mapService.getLastHash();
+        const fileName = command.commentId + '/likes.json';
         let allLikes;
         try {
-            const allLikesBuffer = await this.archiveService.getFileInZip(command.commentId + '/likes.json');
+            const allLikesBuffer = await this.archiveService.getFile(fileName);
             allLikes = JSON.parse(allLikesBuffer.toString());
         } catch (e) {
             allLikes = {};
         }
-        const likes = entitiesMap.likes ?? [];
+
+        // @ts-ignore
+        const likes = lastHash.entityMap.likes ?? [];
         likes.push({commentId: command.commentId, id: command.id});
-        entitiesMap.likes = likes;
-        const fileName = command.commentId + '/likes.json';
+        // @ts-ignore
+        lastHash.entityMap.likes = likes;
+
         allLikes[command.id] = command.data;
         return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allLikes)),
-            entitiesMap,
+            lastHash.entityMap,
             fileName,
             fileName,
-            [fileName],
         );
     }
 }

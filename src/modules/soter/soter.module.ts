@@ -18,6 +18,7 @@ import {SubscribeController} from './subscribe.controller';
 import {AddSubscribeHandler} from './useCase/addSubscribe/addSubscribe.handler';
 import {TasksService} from './TasksService';
 import {BtfsFetcher} from './fetchers/btfs.fetcher';
+import {MapService} from './map.service';
 // tslint:disable-next-line:no-var-requires
 const https = require('https');
 @Module({
@@ -41,6 +42,7 @@ const https = require('https');
   ],
   controllers: [SubscribeController, LikeController, CommentController, FileController, SoterController],
   providers: [
+    MapService,
     BtfsFetcher,
     TasksService,
     AddSubscribeHandler,
