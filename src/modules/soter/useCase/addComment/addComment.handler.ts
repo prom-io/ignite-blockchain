@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import {ArchiveService} from '../../archive.service';
 import {Command} from './command';
 import {SyncTime} from '../../../../model/syncTime.entity';
@@ -6,6 +6,8 @@ import {MapService} from '../../map.service';
 
 @Injectable()
 export class AddCommentHandler {
+    private readonly logger = new Logger(AddCommentHandler.name);
+
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
@@ -29,7 +31,7 @@ export class AddCommentHandler {
         // @ts-ignore
         lastHash.entityMap.posts.push(command.id); // = Array.from(new Set(posts));
         await lastHash.save();
-        console.log(lastHash.entityMap);
+        this.logger.debug(lastHash.entityMap);
         const jsonData = JSON.stringify(command.data);
         const fileBuffer = Buffer.from(jsonData);
         return await this.archiveService.addFile(

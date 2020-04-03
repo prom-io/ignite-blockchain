@@ -1,10 +1,12 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import {Command} from './command';
 import {ArchiveService} from '../../archive.service';
 import {MapService} from '../../map.service';
 
 @Injectable()
 export class AddLikeHandler {
+    private readonly logger = new Logger(AddLikeHandler.name);
+
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
@@ -33,7 +35,7 @@ export class AddLikeHandler {
         // @ts-ignore
         lastHash.entityMap.likes.push({commentId: command.commentId, id: command.id});
         await lastHash.save();
-        console.log(lastHash.entityMap);
+        this.logger.debug(lastHash.entityMap);
         allLikes[command.id] = command.data;
         return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allLikes)),

@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import {Command} from './command';
 import {ArchiveService} from '../../archive.service';
 import {MapService} from '../../map.service';
@@ -7,6 +7,8 @@ const FileType = require('file-type');
 
 @Injectable()
 export class UploadHandler {
+    private readonly logger = new Logger(UploadHandler.name);
+
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
@@ -30,7 +32,7 @@ export class UploadHandler {
         // @ts-ignore
         lastHash.entityMap.images.push(command.id); // = Array.from(new Set(images));
         await lastHash.save();
-        console.log(lastHash.entityMap);
+        this.logger.debug(lastHash.entityMap);
         const fileType = await FileType.fromBuffer(command.file.buffer);
         await this.archiveService.addFile(
             command.file.buffer,

@@ -1,10 +1,12 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import {Command} from './command';
 import {ArchiveService} from '../../archive.service';
 import {MapService} from '../../map.service';
 
 @Injectable()
 export class AddSubscribeHandler {
+    private readonly logger = new Logger(AddSubscribeHandler.name);
+
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
@@ -32,7 +34,7 @@ export class AddSubscribeHandler {
         // @ts-ignore
         // lastHash.entityMap.subscribes = subscribes;
         await lastHash.save();
-        console.log(lastHash.entityMap);
+        this.logger.debug(lastHash.entityMap);
         allSubscribes[command.id] = command.data;
         return await this.archiveService.addFile(
             Buffer.from(JSON.stringify(allSubscribes)),
