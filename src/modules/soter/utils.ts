@@ -10,3 +10,11 @@ export const uuidv4 = (): string => {
 export const ts = (): number => {
     return Date.now();
 };
+
+export const objectToBuffer = (data: object): Buffer => {
+    return Buffer.from(JSON.stringify(data));
+};
+
+export const fileNameGenerate = (fileName: string, ext: string): string => {
+    return fileName + '.' + ext;
+};

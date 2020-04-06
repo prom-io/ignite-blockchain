@@ -2,7 +2,7 @@ import {Injectable, Logger} from '@nestjs/common';
 import {Command} from './command';
 import {ArchiveService} from '../../archive.service';
 import {MapService} from '../../map.service';
-
+import {objectToBuffer} from '../../utils';
 @Injectable()
 export class AddLikeHandler {
     private readonly logger = new Logger(AddLikeHandler.name);
@@ -13,8 +13,6 @@ export class AddLikeHandler {
     ) {}
 
     public async handle(command: Command) {
-        // const entitiesMap = await this.archiveService.getEntitiesInArchive();
-        const lastHash = await this.mapService.getLastHash();
         const fileName = command.commentId + '/likes.json';
         let allLikes;
         try {
@@ -23,24 +21,9 @@ export class AddLikeHandler {
         } catch (e) {
             allLikes = {};
         }
-
-        // @ts-ignore
-        // const likes = lastHash.entityMap.likes ?? [];
-
-        if (!lastHash.entityMapLikes.likes) {
-            // @ts-ignore
-            lastHash.entityMapLikes.likes = [];
-        }
-
-        // @ts-ignore
-        lastHash.entityMapLikes.likes.push({commentId: command.commentId, id: command.id});
-        await lastHash.save();
-        this.logger.debug(lastHash.entityMapLikes);
         allLikes[command.id] = command.data;
-        return await this.archiveService.addFile(
-            Buffer.from(JSON.stringify(allLikes)),
-            fileName,
-            fileName,
-        );
+        await this.mapService.pushLike(command.id, command.commentId, command.peerWallet, command.peerIp);
+        await this.archiveService.addFile(objectToBuffer(allLikes), fileName, fileName);
+        this.logger.debug(`Like with id ${command.id} success added!`);
     }
 }

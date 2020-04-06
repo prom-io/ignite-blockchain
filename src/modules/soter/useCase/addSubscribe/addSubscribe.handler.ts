@@ -2,7 +2,7 @@ import {Injectable, Logger} from '@nestjs/common';
 import {Command} from './command';
 import {ArchiveService} from '../../archive.service';
 import {MapService} from '../../map.service';
-
+import {objectToBuffer} from '../../utils';
 @Injectable()
 export class AddSubscribeHandler {
     private readonly logger = new Logger(AddSubscribeHandler.name);
@@ -12,9 +12,7 @@ export class AddSubscribeHandler {
         private readonly archiveService: ArchiveService,
     ) {}
 
-    public async handle(command: Command) {
-        // const entitiesMap = await this.archiveService.getEntitiesInArchive();
-        const lastHash = await this.mapService.getLastHash();
+    public async handle(command: Command): Promise<void> {
         const fileName = command.userId + '/subscribes.json';
         let allSubscribes;
         try {
@@ -23,23 +21,9 @@ export class AddSubscribeHandler {
         } catch (e) {
             allSubscribes = {};
         }
-        // @ts-ignore
-        // const subscribes = lastHash.entityMap.subscribes ?? [];
-        if (!lastHash.entityMapSubscribes.subscribes) {
-            // @ts-ignore
-            lastHash.entityMapSubscribes.subscribes = [];
-        }
-        // @ts-ignore
-        lastHash.entityMapSubscribes.subscribes.push({userId: command.userId, id: command.id});
-        // @ts-ignore
-        // lastHash.entityMap.subscribes = subscribes;
-        await lastHash.save();
-        this.logger.debug(lastHash.entityMapSubscribes);
         allSubscribes[command.id] = command.data;
-        return await this.archiveService.addFile(
-            Buffer.from(JSON.stringify(allSubscribes)),
-            fileName,
-            fileName,
-        );
+        await this.mapService.pushSubscribe(command.id, command.userId, command.peerWallet, command.peerIp);
+        await this.archiveService.addFile(objectToBuffer(allSubscribes), fileName, fileName);
+        this.logger.debug(`Subscribe with id ${command.id} success added!`);
     }
 }

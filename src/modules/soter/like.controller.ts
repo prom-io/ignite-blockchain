@@ -14,12 +14,13 @@ export class LikeController {
     public async addLike(
         @Body('id') id: string,
         @Body('commentId') commentId: string,
+        @Body('peerWallet') peerWallet: string,
+        @Body('peerIp') peerIp: string,
         @Body('data') data: object,
         @Res() res: Response,
     ) {
         try {
-            console.log('Save Like!');
-            await this.addLikeHandler.handle(new AddLikeCommand(id, commentId, data));
+            await this.addLikeHandler.handle(new AddLikeCommand(id, commentId, peerWallet, peerIp, data));
             return res.status(200).send({message: 'Like success added!'});
         } catch (e) {
             return res.status(400).send({message: e.message});

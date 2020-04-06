@@ -10,8 +10,8 @@ import {ConfigService} from '../../config/config.service';
 import {ArchiveService} from './archive.service';
 import {FileFetcher} from './fetchers/file.fetcher';
 import {FileController} from './file.controller';
-import {AddCommentHandler} from './useCase/addComment/addComment.handler';
-import {CommentController} from './comment.controller';
+import {AddPostHandler} from './useCase/addPost/addPost.handler';
+import {PostController} from './post.controller';
 import {LikeController} from './like.controller';
 import {AddLikeHandler} from './useCase/addLike/addLike.handler';
 import {SubscribeController} from './subscribe.controller';
@@ -19,6 +19,10 @@ import {AddSubscribeHandler} from './useCase/addSubscribe/addSubscribe.handler';
 import {TasksService} from './TasksService';
 import {BtfsFetcher} from './fetchers/btfs.fetcher';
 import {MapService} from './map.service';
+import {UserController} from './user.controller';
+import {AddUserHandler} from './useCase/addUser/addUser.handler';
+import {UnlikeController} from './unlike.controller';
+import {RemoveLikeHandler} from './useCase/removeLike/removeLike.handler';
 // tslint:disable-next-line:no-var-requires
 const https = require('https');
 @Module({
@@ -40,20 +44,30 @@ const https = require('https');
     //   dest: './files',
     // }),
   ],
-  controllers: [SubscribeController, LikeController, CommentController, FileController, SoterController],
+  controllers: [
+    UserController,
+    SubscribeController,
+    LikeController,
+    PostController,
+    FileController,
+    SoterController,
+    UnlikeController,
+  ],
   providers: [
     MapService,
     BtfsFetcher,
     TasksService,
     AddSubscribeHandler,
     AddLikeHandler,
-    AddCommentHandler,
+    AddPostHandler,
     FileFetcher,
     ArchiveService,
     SoterService,
     UploadHandler,
     ArchiveHandler,
     UnzipHandler,
+    AddUserHandler,
+    RemoveLikeHandler,
   ],
 })
 export class SoterModule {}
