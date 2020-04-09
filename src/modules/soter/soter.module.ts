@@ -23,6 +23,8 @@ import {UserController} from './user.controller';
 import {AddUserHandler} from './useCase/addUser/addUser.handler';
 import {UnlikeController} from './unlike.controller';
 import {RemoveLikeHandler} from './useCase/removeLike/removeLike.handler';
+import {UnsubscribeController} from './unsubscribe.controller';
+import {RemoveSubscribeHandler} from './useCase/removeSubscribe/removeSubscribe.handler';
 // tslint:disable-next-line:no-var-requires
 const https = require('https');
 @Module({
@@ -52,6 +54,7 @@ const https = require('https');
     FileController,
     SoterController,
     UnlikeController,
+    UnsubscribeController,
   ],
   providers: [
     MapService,
@@ -68,6 +71,7 @@ const https = require('https');
     UnzipHandler,
     AddUserHandler,
     RemoveLikeHandler,
+    RemoveSubscribeHandler,
   ],
 })
 export class SoterModule {}

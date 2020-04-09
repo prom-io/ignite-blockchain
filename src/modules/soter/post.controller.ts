@@ -14,11 +14,13 @@ export class PostController {
     @Post()
     public async addPost(
         @Body('id') id: string,
+        @Body('peerWallet') peerWallet: string,
+        @Body('peerIp') peerIp: string,
         @Body('data') data: object,
         @Res() res: Response,
     ) {
         try {
-            await this.addPostHandler.handle(new AddPostCommand(id, data));
+            await this.addPostHandler.handle(new AddPostCommand(id, peerWallet, peerIp, data));
             return res.status(200).send({message: 'Post success added!'});
         } catch (e) {
             return res.status(400).send({message: e.message});

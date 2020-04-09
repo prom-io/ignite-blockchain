@@ -16,6 +16,30 @@ export class MapService {
         return lastHash;
     }
 
+    public async pushFile(fileId: string, peerWallet: string, peerIp: string): Promise<void> {
+        const lastHash = await this.getLastHash();
+        // @ts-ignore
+        if (!lastHash.entityMapFiles.images) {
+            // @ts-ignore
+            lastHash.entityMapFiles.images = [];
+        }
+        // @ts-ignore
+        lastHash.entityMapFiles.images.push({fileId, peerWallet, peerIp});
+        await lastHash.save();
+    }
+
+    public async pushPost(postId: string, peerWallet: string, peerIp: string): Promise<void> {
+        const lastHash = await this.getLastHash();
+        // @ts-ignore
+        if (!lastHash.entityMapPosts.posts) {
+            // @ts-ignore
+            lastHash.entityMapPosts.posts = [];
+        }
+        // @ts-ignore
+        lastHash.entityMapPosts.posts.push({postId, peerWallet, peerIp});
+        await lastHash.save();
+    }
+
     public async pushUser(userId: string, peerWallet: string, peerIp: string): Promise<void> {
         const lastHash = await this.getLastHash();
         // @ts-ignore

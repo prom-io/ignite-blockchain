@@ -31,8 +31,14 @@ export class SoterController {
     @UseInterceptors(
         FileInterceptor('file'),
     )
-     public async uploadFile(@Body('id') id, @UploadedFile() file, @Res() res: Response) {
-        await this.uploadHandler.handle(new UploadCommand(file, id));
+     public async uploadFile(
+         @Body('id') id: string,
+         @Body('peerWallet') peerWallet: string,
+         @Body('peerIp') peerIp: string,
+         @UploadedFile() file,
+         @Res() res: Response,
+    ) {
+        await this.uploadHandler.handle(new UploadCommand(id, peerWallet, peerIp, file));
         return res.status(200).send({message: 'File success uploaded!'});
     }
 

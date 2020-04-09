@@ -1,34 +1,40 @@
-# Api for work with Comment
+# Api for work with post
 
-## Api for add Comment
+## Api for add post
 
 ### Route
 > **Method**: Post
 >
-> **URI**: /api/v1/comment
+> **URI**: /api/v1/post
 
 ### Parameters
 ```
     id - required|uuid
+    peerWallet - required|string
+    peerIp - required|string
     data - required|json
 ```
 
 Description:
-1. id - Comment id
-2. data - Comment data (raw data)
+1. id - post id
+2. peerWallet - Node wallet
+3. peerIp - Node ip address
+4. data - post data (raw data)
 ---------------------------------------------------------
-### Example success add comment
+### Example success add post
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/comment
+* Url - http://localhost:3000/api/v1/post
 * Method - Post
 * Header - application/json
 
 Body:
 ```json
 {
-	"id": "e2754550-d6c8-40de-836b-f58210c0424a",
+	"id": "79018bd3-999f-4303-91e7-2d2ee5f5015f",
+	"peerWallet": "TFMamu2dzZQip3H8jYaW4NyTLZ83Azt8aE",
+	"peerIp": "178.0.1.10",
 	"data": {"message": "hello"}
 }
 ``` 
@@ -39,22 +45,24 @@ Body:
 Body:
 ```json
 {
-	"message": "Comment success added!"
+	"message": "post success added!"
 }
 ``` 
 ---------------------------------------------------------
-### Example error add comment
+### Example error add post
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/comment
+* Url - http://localhost:3000/api/v1/post
 * Method - Post
 * Header - application/json
 
 Body:
 ```json
 {
-	"id": "e2754550-d6c8-40de-836b-f58210c0424a",
+	"id": "79018bd3-999f-4303-91e7-2d2ee5f5015f",
+	"peerWallet": "TFMamu2dzZQip3H8jYaW4NyTLZ83Azt8aE",
+	"peerIp": "178.0.1.10",
 	"data": {"message": "hello"}
 }
 ``` 
@@ -69,12 +77,12 @@ Body:
 }
 ``` 
 
-## Api for fetch Comment by ID
+## Api for fetch post by ID
 
 ### Route
 > **Method**: GET
 >
-> **URI**: /api/v1/comment/:cid/:id
+> **URI**: /api/v1/post/:cid/:id
 
 ### Parameters
 ```
@@ -84,13 +92,13 @@ Body:
 
 Description:
 1. cid - Btfs cid (example: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2)
-2. id - Comment id
+2. id - post id
 ---------------------------------------------------------
-### Example success fetch comment
+### Example success fetch post
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/comment/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/99ee5e8f-fea5-4f70-b369-9e8ab0d4b797
+* Url - http://localhost:3000/api/v1/post/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/99ee5e8f-fea5-4f70-b369-9e8ab0d4b797
 * Method - Get
 
 Parameters:
@@ -109,11 +117,11 @@ Body:
 }
 ``` 
 ---------------------------------------------------------
-### Example error fetch comment
+### Example error fetch post
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/comment/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/99ee5e8f-fea5-4f70-b369-9e8ab0d4b797
+* Url - http://localhost:3000/api/v1/post/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/99ee5e8f-fea5-4f70-b369-9e8ab0d4b797
 * Method - Get
 
 Parameters:

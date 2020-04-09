@@ -3,6 +3,7 @@ import {ArchiveService} from '../../archive.service';
 import {Command} from './command';
 import {SyncTime} from '../../../../model/syncTime.entity';
 import {MapService} from '../../map.service';
+import { objectToBuffer, fileNameGenerate } from '../../utils';
 
 @Injectable()
 export class AddPostHandler {
@@ -14,22 +15,15 @@ export class AddPostHandler {
     ) {}
 
     public async handle(command: Command) {
-        const lastHash = await this.mapService.getLastHash();
-        // @ts-ignore
-        if (!lastHash.entityMapPosts.posts) {
-            // @ts-ignore
-            lastHash.entityMapPosts.posts = [];
+        try {
+            const fileBuffer = objectToBuffer(command.data);
+            const fileName = fileNameGenerate(command.id, 'json');
+            await this.mapService.pushPost(command.id, command.peerWallet, command.peerIp);
+            await this.archiveService.addFile(fileBuffer, command.id, fileName);
+            this.logger.debug(`Post with id ${command.id} success saved!`);
+        } catch (e) {
+            this.logger.error(e.message);
+            throw e;
         }
-        // @ts-ignore
-        lastHash.entityMapPosts.posts.push(command.id); // = Array.from(new Set(posts));
-        await lastHash.save();
-        this.logger.debug(lastHash.entityMapPosts);
-        const jsonData = JSON.stringify(command.data);
-        const fileBuffer = Buffer.from(jsonData);
-        return await this.archiveService.addFile(
-            fileBuffer,
-            command.id,
-            command.id + '.json',
-        );
     }
 }

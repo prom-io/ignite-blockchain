@@ -1,4 +1,4 @@
-import {Body, Controller, Post, Res} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Res} from '@nestjs/common';
 import {Response} from 'express';
 import {RemoveSubscribeHandler} from './useCase/removeSubscribe/removeSubscribe.handler';
 import {FileFetcher} from './fetchers/file.fetcher';
@@ -24,5 +24,15 @@ export class UnsubscribeController {
             new RemoveSubscribeCommand(id, userId, peerWallet, peerIp, data),
         );
         return res.status(200).send({message: 'Unsubscribe success added!'});
+    }
+
+    @Get('/:cid/:userId')
+    public async getUnSubscribeByCommentId(@Param('cid') cid: string, @Param('userId') userId: string, @Res() res: Response) {
+        try {
+            const likes = await this.fileFetcher.getById(cid, userId + '/unsubscribes.json');
+            return res.send(JSON.parse(likes.toString()));
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
     }
 }

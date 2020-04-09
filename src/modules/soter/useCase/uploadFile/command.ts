@@ -1,10 +1,13 @@
 export class Command {
     readonly id: string;
-
+    readonly peerWallet: string;
+    readonly peerIp: string;
     readonly file: any;
 
-    constructor(file: any, id: string) {
-        this.file = file;
+    constructor(id: string, peerWallet: string, peerIp: string, file: any) {
         this.id = id;
+        this.peerWallet = peerWallet;
+        this.peerIp = peerIp;
+        this.file = file;
     }
 }
