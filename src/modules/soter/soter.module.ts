@@ -25,10 +25,14 @@ import {UnlikeController} from './unlike.controller';
 import {RemoveLikeHandler} from './useCase/removeLike/removeLike.handler';
 import {UnsubscribeController} from './unsubscribe.controller';
 import {RemoveSubscribeHandler} from './useCase/removeSubscribe/removeSubscribe.handler';
+import {ContractModule} from '../contracts/contract.module';
+import {ContractController} from './contract.controller';
+import {ContractFetcher} from './fetchers/contract.fetcher';
 // tslint:disable-next-line:no-var-requires
 const https = require('https');
 @Module({
   imports: [
+      ContractModule,
       HttpModule.registerAsync({
         imports: [ConfigModule],
         useFactory: async (configService: ConfigService) => ({
@@ -55,6 +59,7 @@ const https = require('https');
     SoterController,
     UnlikeController,
     UnsubscribeController,
+    ContractController,
   ],
   providers: [
     MapService,
@@ -72,6 +77,7 @@ const https = require('https');
     AddUserHandler,
     RemoveLikeHandler,
     RemoveSubscribeHandler,
+    ContractFetcher,
   ],
 })
 export class SoterModule {}

@@ -33,6 +33,7 @@
     "@types/file-type": "^10.9.1",
     "@types/form-data": "^2.5.0",
     "@types/fs-extra": "^8.1.0",
+    "@types/web3": "^1.2.2",
     "adm-zip": "^0.4.14",
     "archiver": "^3.1.1",
     "axios": "^0.19.2",
@@ -53,7 +54,8 @@
     "rxjs": "^6.5.3",
     "trongrid": "^1.2.6",
     "tronweb": "^2.10.1",
-    "typeorm": "^0.2.24"
+    "typeorm": "^0.2.24",
+    "web3": "^1.2.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.9.0",

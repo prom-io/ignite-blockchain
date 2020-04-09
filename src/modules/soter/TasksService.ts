@@ -7,6 +7,7 @@ import {SyncTime} from '../../model/syncTime.entity';
 import {ConfigService} from '../../config/config.service';
 import {MapService} from './map.service';
 import AdmZip = require('adm-zip');
+import {CidStorageService} from '../contracts/cidStorage.service';
 @Injectable()
 export class TasksService {
     private readonly logger = new Logger(TasksService.name);
@@ -17,6 +18,7 @@ export class TasksService {
         private readonly httpService: HttpService,
         private readonly configService: ConfigService,
         private readonly mapService: MapService,
+        private readonly cidStorageService: CidStorageService,
     ) {
     }
 
@@ -56,6 +58,8 @@ export class TasksService {
                 syncTime.synced = true;
                 syncTime.btfsCid = soterResult.data.cid;
                 await syncTime.save();
+                const tx = await this.cidStorageService.setCid(soterResult.data.cid);
+                this.logger.debug(tx);
 
                 const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
                     btfsCid: soterResult.data.cid,
