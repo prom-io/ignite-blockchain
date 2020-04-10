@@ -37,6 +37,7 @@ export class TasksService {
                     syncTime.entityMapUsers,
                     syncTime.entityMapUnLikes,
                     syncTime.entityMapUnSubscribes,
+                    syncTime.entityMapComments,
                 );
                 admZip.addLocalFolder(await this.archiveService.generateDirPath(), '/');
                 admZip.addFile('map.json', Buffer.from(JSON.stringify(syncTime.fileMap)));

@@ -28,6 +28,8 @@ import {RemoveSubscribeHandler} from './useCase/removeSubscribe/removeSubscribe.
 import {ContractModule} from '../contracts/contract.module';
 import {ContractController} from './contract.controller';
 import {ContractFetcher} from './fetchers/contract.fetcher';
+import {CommentController} from './comment.controller';
+import {AddCommentHandler} from './useCase/addComment/addComment.handler';
 // tslint:disable-next-line:no-var-requires
 const https = require('https');
 @Module({
@@ -60,6 +62,7 @@ const https = require('https');
     UnlikeController,
     UnsubscribeController,
     ContractController,
+    CommentController,
   ],
   providers: [
     MapService,
@@ -78,6 +81,7 @@ const https = require('https');
     RemoveLikeHandler,
     RemoveSubscribeHandler,
     ContractFetcher,
+    AddCommentHandler,
   ],
 })
 export class SoterModule {}

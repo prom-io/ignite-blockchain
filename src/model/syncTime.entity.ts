@@ -26,6 +26,9 @@ export class SyncTime extends BaseEntity {
     @Column({type: 'jsonb', name: 'entity_map_posts', default: {}})
     entityMapPosts: object;
 
+    @Column({type: 'jsonb', name: 'entity_map_comments', default: {}})
+    entityMapComments: object;
+
     @Column({type: 'jsonb', name: 'entity_map_likes', default: {}})
     entityMapLikes: object;
 

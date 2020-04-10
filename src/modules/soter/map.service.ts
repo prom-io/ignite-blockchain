@@ -52,6 +52,18 @@ export class MapService {
         await lastHash.save();
     }
 
+    public async pushComment(commentId: string, postId: string, peerWallet: string, peerIp: string): Promise<void> {
+        const lastHash = await this.getLastHash();
+        // @ts-ignore
+        if (!lastHash.entityMapComments.comments) {
+            // @ts-ignore
+            lastHash.entityMapComments.comments = [];
+        }
+        // @ts-ignore
+        lastHash.entityMapComments.comments.push({commentId, postId, peerWallet, peerIp});
+        await lastHash.save();
+    }
+
     public async pushLike(id: string, commentId: string, peerWallet: string, peerIp: string): Promise<void> {
         const lastHash = await this.getLastHash();
         // @ts-ignore
