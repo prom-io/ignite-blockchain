@@ -8,9 +8,10 @@ services:
       - 8.8.8.8
       - 4.4.4.4
     ports:
-      - 3000:3000
+      - {API_PORT}:3000
     depends_on:
       - ignite-dds-postgres
+      - main_net
     volumes:
     - /app/node_modules
   ignite-dds-postgres:

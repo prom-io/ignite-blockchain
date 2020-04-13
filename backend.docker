@@ -4,10 +4,13 @@ COPY ./package.json ./
 RUN yarn install
 COPY . .
 RUN yarn build
-
+RUN chmod +x ./wait-for-it.sh
 
 FROM node:10-alpine
+RUN apk add --no-cache bash
+RUN yarn add web3
 WORKDIR /app
 COPY --from=builder /app ./
 EXPOSE 3000
-CMD ["yarn", "start:prod"]
+# CMD ["yarn", "start:prod"]
+CMD ["./wait-for-it.sh", "-t", "60", "main_net:8545", "--", "yarn", "start:prod"]

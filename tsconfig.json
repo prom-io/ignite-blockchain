@@ -1,12 +1,6 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext",
-      "es2015"
-    ],
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -16,7 +10,8 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules", "dist", "files"]
+  "exclude": ["node_modules", "dist"]
 }
