@@ -64,6 +64,8 @@ export class TasksService {
 
                 const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
                     btfsCid: soterResult.data.cid,
+                    peerWallet: this.configService.get('PEER_WALLET'),
+                    peerIp: this.configService.get('PEER_IP'),
                 }, {
                     headers: {
                         'Content-Type': 'application/json',
