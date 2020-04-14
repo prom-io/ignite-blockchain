@@ -8,7 +8,7 @@ services:
       - 8.8.8.8
       - 4.4.4.4
     ports:
-      - {API_PORT}:3000
+      - ${API_PORT}:3000
     depends_on:
       - ignite-dds-postgres
       - main_net
