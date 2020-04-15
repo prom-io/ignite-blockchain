@@ -55,7 +55,6 @@ export class TasksService {
                 lastHash.createdAt = new Date();
                 await lastHash.save();
                 this.logger.debug('New zip file name generated!');
-
                 syncTime.synced = true;
                 syncTime.btfsCid = soterResult.data.cid;
                 await syncTime.save();

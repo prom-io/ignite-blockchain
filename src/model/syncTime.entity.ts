@@ -23,28 +23,44 @@ export class SyncTime extends BaseEntity {
     @Column({type: 'jsonb', name: 'entity_map', default: {}})
     entityMap: object;
 
-    @Column({type: 'jsonb', name: 'entity_map_posts', default: {}})
+    @Column({type: 'jsonb', name: 'entity_map_posts', default: {
+            posts: [],
+        }})
     entityMapPosts: object;
 
-    @Column({type: 'jsonb', name: 'entity_map_comments', default: {}})
+    @Column({type: 'jsonb', name: 'entity_map_comments', default: {
+            comments: [],
+        }})
     entityMapComments: object;
 
-    @Column({type: 'jsonb', name: 'entity_map_likes', default: {}})
+    @Column({type: 'jsonb', name: 'entity_map_likes', default: {
+            likes: [],
+        }})
     entityMapLikes: object;
 
-    @Column({type: 'jsonb', name: 'entity_map_unlikes', default: {}})
+    @Column({type: 'jsonb', name: 'entity_map_unlikes', default: {
+            unlikes: [],
+        }})
     entityMapUnLikes: object;
 
-    @Column({type: 'jsonb', name: 'entity_map_subscribes', default: {}})
+    @Column({type: 'jsonb', name: 'entity_map_subscribes', default: {
+            subscribes: [],
+        }})
     entityMapSubscribes: object;
 
-    @Column({type: 'jsonb', name: 'entity_map_unsubscribes', default: {}})
+    @Column({type: 'jsonb', name: 'entity_map_unsubscribes', default: {
+            unsubscribes: [],
+        }})
     entityMapUnSubscribes: object;
 
-    @Column({type: 'jsonb', name: 'entity_map_files', default: {}})
+    @Column({type: 'jsonb', name: 'entity_map_files', default: {
+            images: [],
+    }})
     entityMapFiles: object;
 
-    @Column({type: 'jsonb', name: 'entity_map_users', default: {}})
+    @Column({type: 'jsonb', name: 'entity_map_users', default: {
+        users: [],
+    }})
     entityMapUsers: object;
 
     static findLatestItem() {
