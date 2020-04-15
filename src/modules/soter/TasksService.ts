@@ -47,8 +47,12 @@ export class TasksService {
                 const file = fs.readFileSync(zipPath);
                 this.logger.debug('Sync started!');
                 const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
-                this.logger.debug('Zip file to Btfs saved!');
 
+                if (!soterResult.data.cid || soterResult.data.cid === '') {
+                    throw new Error('Cid empty!');
+                }
+
+                this.logger.debug('Zip file to Btfs saved!');
                 const lastHash = new SyncTime();
                 // tslint:disable-next-line:new-parens
                 lastHash.hash = ((+new Date) + Math.random() * 100).toString(32);
@@ -114,6 +118,10 @@ export class TasksService {
             }
         } catch (e) {
             this.logger.error(e.message);
+
+            if(e.stats === 400) {
+                this.logger.error(e.response.body.data);
+            }
         }
     }
 }
