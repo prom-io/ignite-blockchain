@@ -75,7 +75,12 @@ export class ArchiveService {
         throw new Error('File not found!');
     }
 
-    public async getFileInBuffer(fileName: string, fileBuffer: Buffer) {
+    public getFilesInBuffer(fileBuffer: Buffer) {
+        const admZip = new AdmZip(fileBuffer);
+        return admZip.getEntries();
+    }
+
+    public getFileInBuffer(fileName: string, fileBuffer: Buffer) {
         const admZip = new AdmZip(fileBuffer);
         let zipEntry = admZip.getEntry(fileName);
         if (zipEntry) {
@@ -92,7 +97,7 @@ export class ArchiveService {
 
     public async getMapInBuffer(fileBuffer: Buffer) {
         try {
-            const buffer = await this.getFileInBuffer(this.mapName, fileBuffer);
+            const buffer = this.getFileInBuffer(this.mapName, fileBuffer);
             return JSON.parse(buffer.toString());
         } catch (e) {
             return {};

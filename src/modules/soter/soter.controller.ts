@@ -27,6 +27,16 @@ export class SoterController {
         }
     }
 
+    @Get('/all/:cid')
+    public async getAll(@Param('cid') cid: string, @Res() res: Response) {
+        try {
+            const entities = await this.btfsFetcher.getAllFiles(cid);
+            return res.status(200).send(entities);
+        } catch (e) {
+            return res.status(400).send({message: e.message});
+        }
+    }
+
     @Post('/upload')
     @UseInterceptors(
         FileInterceptor('file'),

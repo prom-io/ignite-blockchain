@@ -17,7 +17,7 @@ export class FileFetcher {
             throw new Error('File not found!');
         }
 
-        return await this.archiveService.getFileInBuffer(jsonMap[id], file.data);
+        return this.archiveService.getFileInBuffer(jsonMap[id], file.data);
     }
 
     public async test() {
