@@ -42,9 +42,8 @@ export class ArchiveService {
         return this.basePath + '/' + lastHash.hash + '/' + filePath;
     }
 
-    public async generateDirPath(): Promise<string> {
-        const lastHash = await this.mapService.getLastHash();
-        return this.basePath + '/' + lastHash.hash;
+    public generateDirPath(hash: string): string {
+        return this.basePath + '/' + hash;
     }
 
     public async zipPathGenerate(): Promise<string> {

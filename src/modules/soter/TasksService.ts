@@ -28,73 +28,69 @@ export class TasksService {
         name: 'sync',
     })
     async handleCronSync() {
+        this.logger.debug('===================== SYNC =====================');
         const syncTimes = await SyncTime.findAllNotSynced();
+        await this.mapService.create();
 
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.startTransaction();
         try {
-
             for (const syncTime of syncTimes) {
-                if (syncTime && syncTime.synced === false) {
-                    const admZip = new AdmZip();
-                    const zipPath = `./files/${syncTime.hash}.zip`;
-                    const dirPath = await this.archiveService.generateDirPath();
-                    const entityMap = Object.assign(
-                        syncTime.entityMapFiles,
-                        syncTime.entityMapSubscribes,
-                        syncTime.entityMapLikes,
-                        syncTime.entityMapPosts,
-                        syncTime.entityMapUsers,
-                        syncTime.entityMapUnLikes,
-                        syncTime.entityMapUnSubscribes,
-                        syncTime.entityMapComments,
-                    );
-                    if (!fs.existsSync(dirPath)) {
-                        continue;
-                    }
-
-                    admZip.addLocalFolder(dirPath, '');
-                    admZip.addFile('map.json', Buffer.from(JSON.stringify(syncTime.fileMap)));
-                    admZip.addFile('entities.json', Buffer.from(JSON.stringify(entityMap)));
-                    admZip.writeZip(zipPath);
-
-                    if (!fs.existsSync(zipPath)) {
-                        continue;
-                    }
-
-                    const file = fs.readFileSync(zipPath);
-                    this.logger.debug('Sync started!');
-                    const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
-
-                    if (!soterResult.data.cid || soterResult.data.cid === '') {
-                        throw new Error('Cid empty!');
-                    }
-
-                    this.logger.debug('Zip file to Btfs saved!');
-                    syncTime.synced = true;
-                    syncTime.btfsCid = soterResult.data.cid;
-                    await syncTime.save();
-                    const tx = await this.cidStorageService.setCid(soterResult.data.cid);
-                    this.logger.debug(tx);
-
-                    const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
-                        btfsCid: soterResult.data.cid,
-                        peerWallet: this.configService.get('PEER_WALLET'),
-                        peerIp: this.configService.get('PEER_IP'),
-                    }, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    }).toPromise();
-                    await queryRunner.commitTransaction();
-                    this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
-                    this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
-                    this.logger.debug('Sync completed!');
+                const admZip = new AdmZip();
+                const zipPath = `./files/${syncTime.hash}.zip`;
+                const dirPath = this.archiveService.generateDirPath(syncTime.hash);
+                const entityMap = Object.assign(
+                    syncTime.entityMapFiles,
+                    syncTime.entityMapSubscribes,
+                    syncTime.entityMapLikes,
+                    syncTime.entityMapPosts,
+                    syncTime.entityMapUsers,
+                    syncTime.entityMapUnLikes,
+                    syncTime.entityMapUnSubscribes,
+                    syncTime.entityMapComments,
+                );
+                if (!fs.existsSync(dirPath)) {
+                    continue;
                 }
+                admZip.addLocalFolder(dirPath, '');
+                admZip.addFile('map.json', Buffer.from(JSON.stringify(syncTime.fileMap)));
+                admZip.addFile('entities.json', Buffer.from(JSON.stringify(entityMap)));
+                admZip.writeZip(zipPath);
+                if (!fs.existsSync(zipPath)) {
+                    continue;
+                }
+                const file = fs.readFileSync(zipPath);
+                this.logger.debug('Sync started!');
+                const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
+
+                if (!soterResult.data.cid || soterResult.data.cid === '') {
+                    throw new Error('Cid empty!');
+                }
+
+                this.logger.debug('Zip file to Btfs saved!');
+                syncTime.synced = true;
+                syncTime.btfsCid = soterResult.data.cid;
+                await syncTime.save();
+                const tx = await this.cidStorageService.setCid(soterResult.data.cid);
+                this.logger.debug(tx);
+
+                const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
+                    btfsCid: soterResult.data.cid,
+                    peerWallet: this.configService.get('PEER_WALLET'),
+                    peerIp: this.configService.get('PEER_IP'),
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).toPromise();
+                await queryRunner.commitTransaction();
+                this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
+                this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
+                this.logger.debug('Sync completed!');
+                // if (syncTime && syncTime.synced === false) {}
             }
         } catch (e) {
-            console.log(e);
             await queryRunner.rollbackTransaction();
             this.logger.error(e.message);
 
