@@ -8,6 +8,8 @@ import {ConfigService} from '../../config/config.service';
 import {MapService} from './map.service';
 import AdmZip = require('adm-zip');
 import {CidStorageService} from '../contracts/cidStorage.service';
+import {getConnection} from 'typeorm';
+
 @Injectable()
 export class TasksService {
     private readonly logger = new Logger(TasksService.name);
@@ -25,6 +27,9 @@ export class TasksService {
     @Cron('* * * * *')
     async handleCron() {
         const syncTime = await SyncTime.findLatestItem();
+        const connection = getConnection();
+        const queryRunner = connection.createQueryRunner();
+        await queryRunner.startTransaction();
         try {
             if (syncTime && syncTime.synced === false) {
                 const admZip = new AdmZip();
@@ -74,54 +79,20 @@ export class TasksService {
                         'Content-Type': 'application/json',
                     },
                 }).toPromise();
-
+                await queryRunner.commitTransaction();
                 this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
                 this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
                 this.logger.debug('Sync completed!');
-
-                // this.logger.debug('Sync started!');
-                // // const zipPath = await this.archiveService.zipPathGenerate();
-                //
-                // // if (!fs.existsSync(zipPath)) {
-                // //     throw new Error('Zip file not created!');
-                // // }
-                // //
-                // const zipName = await this.archiveService.getZipName();
-                // const file = fs.readFileSync(zipPath);
-                // this.logger.debug('Read zip file complete!');
-                // const soterResult = await this.soterService.add(file, zipName);
-                // this.logger.debug('Zip file to Btfs saved!');
-                // const lastHash = new SyncTime();
-                // // tslint:disable-next-line:new-parens
-                // lastHash.hash = ((+new Date) + Math.random() * 100).toString(32);
-                // lastHash.createdAt = new Date();
-                // await lastHash.save();
-                // this.logger.debug('New zip file name generated!');
-                //
-                // syncTime.synced = true;
-                // syncTime.btfsCid = soterResult.data.cid;
-                // await syncTime.save();
-                //
-                // const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
-                //     btfsCid: soterResult.data.cid,
-                // }, {
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //     },
-                // }).toPromise();
-                //
-                // this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
-                // this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
-                // this.logger.debug('Sync completed!');
-            } else {
-                this.logger.debug('Sync not started!');
             }
         } catch (e) {
+            await queryRunner.rollbackTransaction();
             this.logger.error(e.message);
 
-            if(e.stats === 400) {
+            if (e.status === 400) {
                 this.logger.error(e.response.body.data);
             }
+        } finally {
+            await queryRunner.release();
         }
     }
 }
