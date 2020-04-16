@@ -51,11 +51,9 @@ export class TasksService {
                     syncTime.entityMapComments,
                 );
                 console.log(1.1);
-                if (!fs.existsSync(dirPath)) {
-                    console.log(1.2);
-                    continue;
+                if (fs.existsSync(dirPath)) {
+                    admZip.addLocalFolder(dirPath, '');
                 }
-                admZip.addLocalFolder(dirPath, '');
                 admZip.addFile('map.json', Buffer.from(JSON.stringify(syncTime.fileMap)));
                 admZip.addFile('entities.json', Buffer.from(JSON.stringify(entityMap)));
                 admZip.writeZip(zipPath);
