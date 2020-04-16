@@ -31,7 +31,7 @@ export class TasksService {
         this.logger.debug('===================== SYNC =====================');
         const syncTimes = await SyncTime.findAllNotSynced();
         await this.mapService.create();
-
+        console.log(syncTimes);
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.startTransaction();
