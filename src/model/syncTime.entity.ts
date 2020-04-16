@@ -63,9 +63,18 @@ export class SyncTime extends BaseEntity {
     }})
     entityMapUsers: object;
 
-    static findLatestItem() {
+    static async findLatestItem() {
         return this.createQueryBuilder('sync_time')
             .where('synced = false')
+            .addOrderBy('created_at', 'DESC')
             .getOne();
     }
+
+    static findAllNotSynced() {
+        return this.createQueryBuilder('sync_time')
+            .where('synced = false')
+            .addOrderBy('created_at', 'ASC')
+            .getMany();
+    }
 }
+

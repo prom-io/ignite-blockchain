@@ -24,14 +24,17 @@ export class TasksService {
     ) {
     }
 
-    @Cron('* * * * *')
-    async handleCron() {
-        const syncTime = await SyncTime.findLatestItem();
+    @Cron('* * * * *', {
+        name: 'sync',
+    })
+    async handleCronSync() {
+        const syncTimes = await SyncTime.findAllNotSynced();
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.startTransaction();
         try {
-            if (syncTime && syncTime.synced === false) {
+
+            for (const syncTime of syncTimes) {
                 const admZip = new AdmZip();
                 const zipPath = `./files/${syncTime.hash}.zip`;
                 const entityMap = Object.assign(
@@ -58,12 +61,6 @@ export class TasksService {
                 }
 
                 this.logger.debug('Zip file to Btfs saved!');
-                const lastHash = new SyncTime();
-                // tslint:disable-next-line:new-parens
-                lastHash.hash = ((+new Date) + Math.random() * 100).toString(32);
-                lastHash.createdAt = new Date();
-                await lastHash.save();
-                this.logger.debug('New zip file name generated!');
                 syncTime.synced = true;
                 syncTime.btfsCid = soterResult.data.cid;
                 await syncTime.save();
@@ -83,8 +80,12 @@ export class TasksService {
                 this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
                 this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
                 this.logger.debug('Sync completed!');
+                // if (syncTime && syncTime.synced === false) {
+                //
+                // }
             }
         } catch (e) {
+            console.log(e);
             await queryRunner.rollbackTransaction();
             this.logger.error(e.message);
 

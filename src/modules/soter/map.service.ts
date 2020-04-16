@@ -1,19 +1,26 @@
 import {Injectable} from '@nestjs/common';
 import {SyncTime} from '../../model/syncTime.entity';
 import {getConnection, UpdateResult} from 'typeorm';
+import {SchedulerRegistry} from '@nestjs/schedule';
 
 @Injectable()
 export class MapService {
+    constructor(private schedulerRegistry: SchedulerRegistry) {}
+
     public async getLastHash(): Promise<SyncTime> {
         let lastHash = await SyncTime.findLatestItem();
         if (!lastHash) {
-            lastHash = new SyncTime();
-            // tslint:disable-next-line:new-parens
-            lastHash.hash = ((+new Date) + Math.random() * 100).toString(32);
-            lastHash.createdAt = new Date();
-            await lastHash.save();
+            lastHash = await this.create();
         }
-        lastHash = await SyncTime.findLatestItem();
+        return lastHash;
+    }
+
+    public async create() {
+        const lastHash = new SyncTime();
+        // tslint:disable-next-line:new-parens
+        lastHash.hash = ((+new Date) + Math.random() * 100).toString(32);
+        lastHash.createdAt = new Date();
+        await lastHash.save();
         return lastHash;
     }
 
@@ -45,7 +52,18 @@ export class MapService {
     }
 
     public async pushPost(postId: string, peerWallet: string, peerIp: string): Promise<UpdateResult> {
-        const lastHash = await this.getLastHash();
+        const job = this.schedulerRegistry.getCronJob('sync');
+        const dates = job.nextDates(1);
+        const dateJob = new Date(dates[0].toDate());
+        const nowDate = new Date();
+        // @ts-ignore
+        const difference = (dateJob - nowDate) / 1000;
+        let lastHash;
+        if (difference > 40) {
+            lastHash = await this.create();
+        } else {
+            lastHash = await this.getLastHash();
+        }
         const data = JSON.stringify({postId, peerWallet, peerIp});
         const querySet = {
             entityMapPosts: () => `jsonb_set(entity_map_posts, '{posts, 99999}', '${data}')`,
