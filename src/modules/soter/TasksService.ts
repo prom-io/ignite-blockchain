@@ -31,7 +31,6 @@ export class TasksService {
         this.logger.debug('===================== SYNC =====================');
         const syncTimes = await SyncTime.findAllNotSynced();
         await this.mapService.create();
-        console.log(syncTimes);
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.startTransaction();
@@ -68,7 +67,8 @@ export class TasksService {
                 const file = fs.readFileSync(zipPath);
                 this.logger.debug('Sync started!');
                 const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
-
+                console.log(soterResult);
+                console.log(soterResult.data);
                 if (!soterResult.data.cid || soterResult.data.cid === '') {
                     throw new Error('Cid empty!');
                 }
