@@ -29,7 +29,7 @@ export class TasksService {
     })
     async handleCronSync() {
         const syncTimes = await SyncTime.findAllNotSynced();
-        await this.mapService.create();
+
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.startTransaction();
@@ -53,6 +53,10 @@ export class TasksService {
                     admZip.addFile('map.json', Buffer.from(JSON.stringify(syncTime.fileMap)));
                     admZip.addFile('entities.json', Buffer.from(JSON.stringify(entityMap)));
                     admZip.writeZip(zipPath);
+
+                    if (!fs.existsSync(zipPath)) {
+                        continue;
+                    }
 
                     const file = fs.readFileSync(zipPath);
                     this.logger.debug('Sync started!');
