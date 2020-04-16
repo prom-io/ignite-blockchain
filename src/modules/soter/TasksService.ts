@@ -33,8 +33,9 @@ export class TasksService {
         await this.mapService.create();
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
-        await queryRunner.startTransaction();
         try {
+            await queryRunner.connect();
+            await queryRunner.startTransaction();
             for (const syncTime of syncTimes) {
                 console.log(1);
                 const admZip = new AdmZip();
