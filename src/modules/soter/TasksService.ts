@@ -28,8 +28,8 @@ export class TasksService {
         name: 'sync',
     })
     async handleCronSync() {
-        await this.mapService.create();
         const syncTimes = await SyncTime.findAllNotSynced();
+        await this.mapService.create();
         const connection = getConnection();
         const queryRunner = connection.createQueryRunner();
         await queryRunner.startTransaction();
