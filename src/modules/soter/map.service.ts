@@ -52,18 +52,7 @@ export class MapService {
     }
 
     public async pushPost(postId: string, peerWallet: string, peerIp: string): Promise<UpdateResult> {
-        const job = this.schedulerRegistry.getCronJob('sync');
-        const dates = job.nextDates(1);
-        const dateJob = new Date(dates[0].toDate());
-        const nowDate = new Date();
-        // @ts-ignore
-        const difference = (dateJob - nowDate) / 1000;
-        let lastHash;
-        if (difference > 40) {
-            lastHash = await this.create();
-        } else {
-            lastHash = await this.getLastHash();
-        }
+        const lastHash = await this.getLastHash();
         const data = JSON.stringify({postId, peerWallet, peerIp});
         const querySet = {
             entityMapPosts: () => `jsonb_set(entity_map_posts, '{posts, 99999}', '${data}')`,
