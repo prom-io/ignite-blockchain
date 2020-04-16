@@ -50,6 +50,12 @@ export class TasksService {
                     syncTime.entityMapUnSubscribes,
                     syncTime.entityMapComments,
                 );
+
+                if (Object.keys(syncTime.fileMap).length === 0) {
+                    await syncTime.remove();
+                    continue;
+                }
+
                 if (fs.existsSync(dirPath)) {
                     admZip.addLocalFolder(dirPath, '');
                 }
