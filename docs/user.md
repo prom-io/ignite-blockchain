@@ -3,9 +3,7 @@
 ## Api for add user
 
 ### Route
-> **Method**: Post
->
-> **URI**: /api/v1/user
+> **TOPIC**: ignite.users.add
 
 ### Parameters
 ```
@@ -25,9 +23,7 @@ Description:
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/user
-* Method - Post
-* Header - application/json
+* Topic - ignite.users.add
 
 Body:
 ```json
@@ -53,9 +49,7 @@ Body:
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/user
-* Method - Post
-* Header - application/json
+* Topic - ignite.users.add
 
 Body:
 ```json
@@ -74,68 +68,5 @@ Body:
 ```json
 {
 	"message": "Id exists!"
-}
-``` 
-
-## Api for fetch user by ID
-
-### Route
-> **Method**: GET
->
-> **URI**: /api/v1/user/:cid/:id
-
-### Parameters
-```
-    cid - required|string
-    id - required|uuid
-```
-
-Description:
-1. cid - Btfs cid (example: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2)
-2. id - User entity id
----------------------------------------------------------
-### Example success fetch user
-
-#### Request 
-
-* Url - http://localhost:3000/api/v1/user/QmPLPB1CQ9SiJ7DUYtdPdDbANnY68o4go24k12XAWp77Ga/a1f5bd70-18f2-4753-bb3b-a4cafb01ef3c
-* Method - Get
-
-Parameters:
-```
-    cid: QmPLPB1CQ9SiJ7DUYtdPdDbANnY68o4go24k12XAWp77Ga
-    id: a1f5bd70-18f2-4753-bb3b-a4cafb01ef3c
-``` 
-
-#### Response
-* Status - 200
-
-Body:
-```json
-{
-    "message": "test data"
-}
-``` 
----------------------------------------------------------
-### Example error fetch user
-
-#### Request 
-
-* Url - http://localhost:3000/api/v1/user/QmPLPB1CQ9SiJ7DUYtdPdDbANnY68o4go24k12XAWp77Ga/a1f5bd70-18f2-4753-bb3b-a4cafb01ef3c
-* Method - Get
-
-Parameters:
-```
-    cid: QmPLPB1CQ9SiJ7DUYtdPdDbANnY68o4go24k12XAWp77Ga
-    id: a1f5bd70-18f2-4753-bb3b-a4cafb01ef3c
-``` 
-
-#### Response
-* Status - 400
-
-Body:
-```json
-{
-	"message": "File not found!"
 }
 ``` 

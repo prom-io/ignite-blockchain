@@ -3,9 +3,7 @@
 ## Api for add Subscribe
 
 ### Route
-> **Method**: Post
->
-> **URI**: /api/v1/subscribe
+> **TOPIC**: ignite.subscribes.add
 
 ### Parameters
 ```
@@ -27,9 +25,7 @@ Description:
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/subscribe
-* Method - Post
-* Header - Content-type: application/json
+* Topic - ignite.subscribes.add
 
 Body:
 ```json
@@ -56,9 +52,7 @@ Body:
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/subscribe
-* Method - Post
-* Header - Content-type: application/json
+* Topic - ignite.subscribes.add
 
 Body:
 ```json
@@ -84,9 +78,7 @@ Body:
 ## Api for UnSubscribe
 
 ### Route
-> **Method**: Post
->
-> **URI**: /api/v1/unsubscribe
+> **TOPIC**: ignite.unsubscribes.add
 
 ### Parameters
 ```
@@ -108,9 +100,7 @@ Description:
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/unsubscribe
-* Method - Post
-* Header - Content-type: application/json
+* Topic - ignite.unsubscribes.add
 
 Body:
 ```json
@@ -137,9 +127,7 @@ Body:
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/unsubscribe
-* Method - Post
-* Header - Content-type: application/json
+* Topic - ignite.unsubscribes.add
 
 Body:
 ```json
@@ -159,141 +147,5 @@ Body:
 ```json
 {
 	"message": "Id exists!"
-}
-``` 
-
-## Api for fetch all Subscribe by User ID
-
-### Route
-> **Method**: GET
->
-> **URI**: /api/v1/subscribe/:cid/:id
-
-### Parameters
-```
-    cid - required|string
-    id - required|uuid
-```
-
-Description:
-1. cid - Btfs cid (example: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2)
-2. id - User id
----------------------------------------------------------
-### Example success fetch subscribes
-
-#### Request 
-
-* Url - http://localhost:3000/api/v1/subscribe/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/71e1ec8a-cb1b-4a5c-af5d-20dffd10f0e3
-* Method - Get
-
-Parameters:
-```
-    cid: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2
-    id: 71e1ec8a-cb1b-4a5c-af5d-20dffd10f0e3
-``` 
-
-#### Response
-* Status - 200
-
-Body:
-```json
-{
-    "ab541c76-ce8a-4714-a010-5cb1918d58e6": {
-        "message": "2313123"
-    },
-    "01866d34-7d72-4c0a-9770-0d7315721832": {
-        "message": "2313123"
-    }
-}
-``` 
----------------------------------------------------------
-### Example error fetch subscribes
-
-#### Request 
-
-* Url - http://localhost:3000/api/v1/subscribe/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/71e1ec8a-cb1b-4a5c-af5d-20dffd10f0e3
-* Method - Get
-
-Parameters:
-```
-    cid: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2
-    id: 71e1ec8a-cb1b-4a5c-af5d-20dffd10f0e3
-``` 
-
-#### Response
-* Status - 400
-
-Body:
-```json
-{
-	"message": "File not found!"
-}
-``` 
-
-## Api for fetch all unsubscribe by User ID
-
-### Route
-> **Method**: GET
->
-> **URI**: /api/v1/unsubscribe/:cid/:id
-
-### Parameters
-```
-    cid - required|string
-    id - required|uuid
-```
-
-Description:
-1. cid - Btfs cid (example: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2)
-2. id - User id
----------------------------------------------------------
-### Example success fetch unsubscribe
-
-#### Request 
-
-* Url - http://localhost:3000/api/v1/unsubscribe/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/71e1ec8a-cb1b-4a5c-af5d-20dffd10f0e3
-* Method - Get
-
-Parameters:
-```
-    cid: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2
-    id: 71e1ec8a-cb1b-4a5c-af5d-20dffd10f0e3
-``` 
-
-#### Response
-* Status - 200
-
-Body:
-```json
-{
-    "ab541c76-ce8a-4714-a010-5cb1918d58e6": {
-        "message": "2313123"
-    },
-    "01866d34-7d72-4c0a-9770-0d7315721832": {
-        "message": "2313123"
-    }
-}
-``` 
----------------------------------------------------------
-### Example error fetch unsubscribe
-
-#### Request 
-
-* Url - http://localhost:3000/api/v1/unsubscribe/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/71e1ec8a-cb1b-4a5c-af5d-20dffd10f0e3
-* Method - Get
-
-Parameters:
-```
-    cid: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2
-    id: 71e1ec8a-cb1b-4a5c-af5d-20dffd10f0e3
-``` 
-
-#### Response
-* Status - 400
-
-Body:
-```json
-{
-	"message": "File not found!"
 }
 ``` 

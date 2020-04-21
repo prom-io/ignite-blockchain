@@ -3,9 +3,7 @@
 ## Api for add post
 
 ### Route
-> **Method**: Post
->
-> **URI**: /api/v1/post
+> **TOPIC**: ignite.posts.add
 
 ### Parameters
 ```
@@ -25,9 +23,7 @@ Description:
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/post
-* Method - Post
-* Header - application/json
+* Topic - ignite.posts.add
 
 Body:
 ```json
@@ -53,9 +49,7 @@ Body:
 
 #### Request 
 
-* Url - http://localhost:3000/api/v1/post
-* Method - Post
-* Header - application/json
+* Topic - ignite.posts.add
 
 Body:
 ```json
@@ -75,67 +69,4 @@ Body:
 {
 	"message": "Id exists!"
 }
-``` 
-
-## Api for fetch post by ID
-
-### Route
-> **Method**: GET
->
-> **URI**: /api/v1/post/:cid/:id
-
-### Parameters
-```
-    cid - required|string
-    id - required|uuid
-```
-
-Description:
-1. cid - Btfs cid (example: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2)
-2. id - post id
----------------------------------------------------------
-### Example success fetch post
-
-#### Request 
-
-* Url - http://localhost:3000/api/v1/post/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/99ee5e8f-fea5-4f70-b369-9e8ab0d4b797
-* Method - Get
-
-Parameters:
-```
-    cid: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2
-    id: 99ee5e8f-fea5-4f70-b369-9e8ab0d4b797
-``` 
-
-#### Response
-* Status - 200
-
-Body:
-```json
-{
-    "message": "hello"
-}
-``` 
----------------------------------------------------------
-### Example error fetch post
-
-#### Request 
-
-* Url - http://localhost:3000/api/v1/post/Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2/99ee5e8f-fea5-4f70-b369-9e8ab0d4b797
-* Method - Get
-
-Parameters:
-```
-    cid: Qme5jXiZFauedKCmiAQQzXLkfj3VjBCmeh2k672MsvRmv2
-    id: 99ee5e8f-fea5-4f70-b369-9e8ab0d4b797
-``` 
-
-#### Response
-* Status - 400
-
-Body:
-```json
-{
-	"message": "File not found!"
-}
-``` 
+```  
