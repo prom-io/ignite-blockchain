@@ -1,28 +1,24 @@
+import {Controller} from '@nestjs/common';
 import {RemoveLikeHandler} from './useCase/removeLike/removeLike.handler';
 import {Command as RemoveLikeCommand} from './useCase/removeLike/command';
-import {FileFetcher} from './fetchers/file.fetcher';
-import {Body, Controller, Get, Param, Post, Res} from '@nestjs/common';
-import {Response} from 'express';
+import {Ctx, KafkaContext, MessagePattern, Payload} from '@nestjs/microservices';
 
-@Controller('/api/v1/unlike')
+@Controller()
 export class UnlikeController {
-    constructor(
-        private readonly removeLikeHandler: RemoveLikeHandler,
-        private readonly fileFetcher: FileFetcher,
-    ) {}
+    constructor(private readonly removeLikeHandler: RemoveLikeHandler) {}
 
-    @Post('/')
-    public async addUnlike(
-        @Body('id') id: string,
-        @Body('commentId') commentId: string,
-        @Body('peerWallet') peerWallet: string,
-        @Body('peerIp') peerIp: string,
-        @Body('data') data: object,
-        @Res() res: Response,
-    ) {
+    @MessagePattern('ignite.unlikes.add')
+    public async createUnlike(@Payload() message: any, @Ctx() context: KafkaContext) {
+        const value = message.value;
         await this.removeLikeHandler.handle(
-            new RemoveLikeCommand(id, commentId, peerWallet, peerIp, data),
+            new RemoveLikeCommand(
+                value.id,
+                value.commentId,
+                value.peerWallet,
+                value.peerIp,
+                value.data,
+            ),
         );
-        return res.status(200).send({message: 'Unlike success added!'});
+        return {message: 'Unlike success added WORK!!!!!'}
     }
 }

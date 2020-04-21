@@ -19,8 +19,4 @@ export class FileFetcher {
 
         return this.archiveService.getFileInBuffer(jsonMap[id], file.data);
     }
-
-    public async test() {
-        return await this.archiveService.getFileInZip('test/1.jpeg');
-    }
 }

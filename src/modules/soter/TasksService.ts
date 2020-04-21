@@ -28,15 +28,11 @@ export class TasksService {
         name: 'sync',
     })
     async handleCronSync() {
-        this.logger.debug('===================== SYNC =====================');
         const syncTimes = await SyncTime.findAllNotSynced();
         await this.mapService.create();
-        // const connection = getConnection();
-        // const queryRunner = connection.createQueryRunner();
         try {
-            // await queryRunner.connect();
-            // await queryRunner.startTransaction();
             for (const syncTime of syncTimes) {
+                this.logger.debug('===================== SYNC =====================');
                 const admZip = new AdmZip();
                 const zipPath = `./files/${syncTime.hash}.zip`;
                 const dirPath = this.archiveService.generateDirPath(syncTime.hash);
@@ -68,7 +64,6 @@ export class TasksService {
                 const file = fs.readFileSync(zipPath);
                 this.logger.debug('Sync started!');
                 const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
-                console.log(soterResult);
                 if (!soterResult.data.cid || soterResult.data.cid === '') {
                     throw new Error('Cid empty!');
                 }
@@ -89,21 +84,16 @@ export class TasksService {
                         'Content-Type': 'application/json',
                     },
                 }).toPromise();
-                // await queryRunner.commitTransaction();
                 this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
                 this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
                 this.logger.debug('Sync completed!');
-                // if (syncTime && syncTime.synced === false) {}
             }
         } catch (e) {
-            // await queryRunner.rollbackTransaction();
             this.logger.error(e.message);
 
             if (e.status === 400) {
                 this.logger.error(e.response.body.data);
             }
-        } finally {
-            // await queryRunner.release();
         }
     }
 }

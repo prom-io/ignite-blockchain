@@ -1,12 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import {ConfigModule} from './config/config.module';
 import {SoterModule} from './modules/soter/soter.module';
 import { ConfigService } from './config/config.service';
 import {Connection} from 'typeorm';
-import {SyncTime} from './model/syncTime.entity';
 import {ScheduleModule} from '@nestjs/schedule';
 
 @Module({
@@ -20,9 +17,9 @@ import {ScheduleModule} from '@nestjs/schedule';
       ConfigModule,
       SoterModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {
+export class ApplicationModule {
     constructor(private connection: Connection) {}
 }

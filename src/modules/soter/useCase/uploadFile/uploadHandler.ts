@@ -17,10 +17,11 @@ export class UploadHandler {
 
     public async handle(command: Command): Promise<void> {
         try {
-            const fileType = await FileType.fromBuffer(command.file.buffer);
+            const fileBuffer = Buffer.from(command.file.buffer.data);
+            const fileType = await FileType.fromBuffer(fileBuffer);
             const fileName = fileNameGenerate(command.id, fileType.ext);
             await this.mapService.pushFile(command.id, command.peerWallet, command.peerIp);
-            await this.archiveService.addFile(command.file.buffer, command.id, fileName);
+            await this.archiveService.addFile(fileBuffer, command.id, fileName);
         } catch (e) {
             this.logger.error(e.message);
             throw e;

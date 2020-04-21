@@ -1,3 +1,5 @@
+import {IncomingMessage} from 'http';
+
 export class Command {
     readonly id: string;
     readonly peerWallet: string;

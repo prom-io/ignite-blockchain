@@ -4,19 +4,25 @@ networks:
     driver: bridge
 services:
   ignite-api:
-   build:
-     context: .
-     dockerfile: backend.docker
-   dns:
-     - 8.8.8.8
-     - 4.4.4.4
-   ports:
-     - ${API_PORT}:3000
-   depends_on:
-     - ignite-dds-postgres
-     - ingite-dds-main_net
-   volumes:
-   - /app/node_modules
+    build:
+      context: .
+      dockerfile: backend.docker
+    dns:
+      - 8.8.8.8
+      - 4.4.4.4
+    env_file:
+      - production.env
+    environment:
+      - NODE_ENV=production
+    networks:
+      - kafka-net
+    ports:
+      - ${API_PORT}:3000
+    depends_on:
+      - ignite-dds-postgres
+      - ingite-dds-main_net
+    volumes:
+      - /app/node_modules
   ignite-dds-zookeeper-server:
     image: 'bitnami/zookeeper:latest'
     ports:
@@ -64,6 +70,8 @@ services:
     image: postgres:12.2-alpine
     volumes:
       - ignite-dds-postgres:/var/lib/postgresql/data
+    networks:
+      - kafka-net
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -76,6 +84,8 @@ services:
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    networks:
+      - kafka-net
     ports:
       - ${PGADMIN_PORT}:80
     depends_on:
@@ -84,6 +94,8 @@ services:
     image: trufflesuite/ganache-cli:latest
     ports:
       - "8545:8545"
+    networks:
+      - kafka-net
     volumes:
       - ganache_data:/ganache_data
     entrypoint:

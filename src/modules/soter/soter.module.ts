@@ -1,10 +1,8 @@
 import {HttpModule, Module} from '@nestjs/common';
-import { SoterController } from './soter.controller';
 import {SoterService} from './soter.service';
 import {UploadHandler} from './useCase/uploadFile/uploadHandler';
 import {ArchiveHandler} from './useCase/archiveFile/archiveHandler';
 import {UnzipHandler} from './useCase/unzipFile/unzipHandler';
-import { MulterModule } from '@nestjs/platform-express';
 import {ConfigModule} from '../../config/config.module';
 import {ConfigService} from '../../config/config.service';
 import {ArchiveService} from './archive.service';
@@ -26,7 +24,6 @@ import {RemoveLikeHandler} from './useCase/removeLike/removeLike.handler';
 import {UnsubscribeController} from './unsubscribe.controller';
 import {RemoveSubscribeHandler} from './useCase/removeSubscribe/removeSubscribe.handler';
 import {ContractModule} from '../contracts/contract.module';
-import {ContractController} from './contract.controller';
 import {ContractFetcher} from './fetchers/contract.fetcher';
 import {CommentController} from './comment.controller';
 import {AddCommentHandler} from './useCase/addComment/addComment.handler';
@@ -48,9 +45,6 @@ const https = require('https');
         }),
         inject: [ConfigService],
       }),
-    // MulterModule.register({
-    //   dest: './files',
-    // }),
   ],
   controllers: [
     UserController,
@@ -58,10 +52,8 @@ const https = require('https');
     LikeController,
     PostController,
     FileController,
-    SoterController,
     UnlikeController,
     UnsubscribeController,
-    ContractController,
     CommentController,
   ],
   providers: [

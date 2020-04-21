@@ -1,39 +1,17 @@
-import {Body, Controller, Get, Param, Post, Res} from '@nestjs/common';
-import {Response} from 'express';
+import {Controller} from '@nestjs/common';
 import {AddLikeHandler} from './useCase/addLike/addLike.handler';
 import {Command as AddLikeCommand} from './useCase/addLike/command';
-import {FileFetcher} from './fetchers/file.fetcher';
-@Controller('/api/v1/like')
+import {Ctx, KafkaContext, MessagePattern, Payload} from '@nestjs/microservices';
+@Controller()
 export class LikeController {
-    constructor(
-        private readonly addLikeHandler: AddLikeHandler,
-        private readonly fileFetcher: FileFetcher,
-    ) {
-    }
-    @Post()
-    public async addLike(
-        @Body('id') id: string,
-        @Body('commentId') commentId: string,
-        @Body('peerWallet') peerWallet: string,
-        @Body('peerIp') peerIp: string,
-        @Body('data') data: object,
-        @Res() res: Response,
-    ) {
-        try {
-            await this.addLikeHandler.handle(new AddLikeCommand(id, commentId, peerWallet, peerIp, data));
-            return res.status(200).send({message: 'Like success added!'});
-        } catch (e) {
-            return res.status(400).send({message: e.message});
-        }
-    }
+    constructor(private readonly addLikeHandler: AddLikeHandler) {}
 
-    @Get('/:cid/:commentId')
-    public async getLikeByCommentId(@Param('cid') cid: string, @Param('commentId') commentId: string, @Res() res: Response) {
-        try {
-            const likes = await this.fileFetcher.getById(cid, commentId + '/likes.json');
-            return res.send(JSON.parse(likes.toString()));
-        } catch (e) {
-            return res.status(400).send({message: e.message});
-        }
+    @MessagePattern('ignite.likes.add')
+    public async createLike(@Payload() message: any, @Ctx() context: KafkaContext) {
+        const value = message.value;
+        await this.addLikeHandler.handle(
+            new AddLikeCommand(value.id, value.commentId, value.peerWallet, value.peerIp, value.data),
+        );
+        return {message: 'Likes success added WORK!!!!'};
     }
 }

@@ -1,4 +1,3 @@
-import { Soter } from 'btfs-soter';
 import {ConfigService} from '../../config/config.service';
 import {HttpService, Injectable} from '@nestjs/common';
 // tslint:disable-next-line:no-var-requires
@@ -6,7 +5,6 @@ const TronWeb = require('tronweb');
 import { uuidv4, ts} from './utils';
 // tslint:disable-next-line:no-var-requires
 const FormData = require('form-data');
-import * as fs from 'fs';
 @Injectable()
 export class SoterService {
 
@@ -20,7 +18,6 @@ export class SoterService {
     }
 
     public async add(fileBuffer: Buffer, fileName: string) {
-    // public async add(filePath: string) {
         const tronWeb = this.tronWebInstance();
         const requestUser = tronWeb.defaultAddress.base58;
         const signedUser = tronWeb.defaultAddress.base58;
@@ -37,10 +34,6 @@ export class SoterService {
         const formData = new FormData();
         formData.append('raw_data', rawDataJson);
         formData.append('signature', signature);
-        // formData.append('file', fileBuffer, {
-        //     filename: fileName,
-        //     contentType: fileMime,
-        // });
         formData.append('file', fileBuffer, fileName);
         return this.httpService.post('/api/v0/add', formData, {
             headers: formData.getHeaders(),
@@ -49,10 +42,5 @@ export class SoterService {
 
     public async getFileByCid(cid: string) {
         return await this.httpService.get('https://sandbox.btfssoter.io/btfs/' + cid, {responseType: 'arraybuffer'}).toPromise();
-    }
-
-    public soterInstance(): Soter {
-        const tronweb = new TronWeb(this.configService.getTronConfig());
-        return new Soter({tronweb});
     }
 }
