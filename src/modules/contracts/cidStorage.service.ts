@@ -23,6 +23,7 @@ export class CidStorageService {
 
     public async setCid(cid: string): Promise<any> {
         const contract = this.contract();
+        console.log(contract);
         return contract.methods.setCid(cid).send(this.configService.getDefaultGas());
     }
 

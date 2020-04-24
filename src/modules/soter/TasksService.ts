@@ -68,13 +68,6 @@ export class TasksService {
                     throw new Error('Cid empty!');
                 }
 
-                this.logger.debug('Zip file to Btfs saved!');
-                syncTime.synced = true;
-                syncTime.btfsCid = soterResult.data.cid;
-                await syncTime.save();
-                const tx = await this.cidStorageService.setCid(soterResult.data.cid);
-                this.logger.debug(tx);
-
                 const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
                     btfsCid: soterResult.data.cid,
                     peerWallet: this.configService.get('PEER_WALLET'),
@@ -84,6 +77,14 @@ export class TasksService {
                         'Content-Type': 'application/json',
                     },
                 }).toPromise();
+
+                this.logger.debug('Zip file to Btfs saved!');
+                syncTime.synced = true;
+                syncTime.btfsCid = soterResult.data.cid;
+                await syncTime.save();
+                const tx = await this.cidStorageService.setCid(soterResult.data.cid);
+                this.logger.debug(tx);
+
                 this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
                 this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
                 this.logger.debug('Sync completed!');
