@@ -21,6 +21,7 @@ services:
     depends_on:
       - ignite-dds-postgres
       - ingite-dds-main_net
+      - ignite-dds-zookeeper-server
     volumes:
       - /app/node_modules
   ignite-dds-zookeeper-server:
