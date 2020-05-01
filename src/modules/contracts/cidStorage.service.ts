@@ -23,8 +23,19 @@ export class CidStorageService {
 
     public async setCid(cid: string): Promise<any> {
         const contract = this.contract();
-        console.log(contract);
-        return contract.methods.setCid(cid).send(this.configService.getDefaultGas());
+        const setCid = await contract.methods.setCid(cid);
+        const setCidAbi = setCid.encodeABI();
+        const count = await this.web3.eth.getTransactionCount(this.configService.get('DEFAULT_ADDRESS'));
+        const signedTx = await this.web3.eth.accounts.signTransaction({
+            nonce: count,
+            from: this.configService.get('DEFAULT_ADDRESS'),
+            to: this.configService.get('CID_STORAGE_CONTRACT_ADDRESS'),
+            data: setCidAbi,
+            gas: 109973,
+        }, this.configService.get('PRIVATE_KEY'));
+
+        return this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        // return contract.methods.setCid(cid).send(this.configService.getDefaultGas());
     }
 
     public async getCidCount(): Promise<any> {
