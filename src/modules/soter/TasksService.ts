@@ -9,6 +9,7 @@ import {MapService} from './map.service';
 import AdmZip = require('adm-zip');
 import {CidStorageService} from '../contracts/cidStorage.service';
 import {getConnection} from 'typeorm';
+import {TelegramService} from 'nestjs-telegram';
 
 @Injectable()
 export class TasksService {
@@ -21,6 +22,7 @@ export class TasksService {
         private readonly configService: ConfigService,
         private readonly mapService: MapService,
         private readonly cidStorageService: CidStorageService,
+        private readonly telegram: TelegramService,
     ) {
     }
 
@@ -63,8 +65,16 @@ export class TasksService {
                 }
                 const file = fs.readFileSync(zipPath);
                 this.logger.debug('Sync started!');
+                await this.telegram.sendMessage({
+                    chat_id: '-330731984',
+                    text: 'Sync started!'
+                }).toPromise();
                 const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
                 if (!soterResult.data.cid || soterResult.data.cid === '') {
+                    await this.telegram.sendMessage({
+                        chat_id: '-330731984',
+                        text: 'Error: Cid empty in btfs response!'
+                    }).toPromise();
                     throw new Error('Cid empty!');
                 }
 
@@ -88,11 +98,20 @@ export class TasksService {
                 this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
                 this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
                 this.logger.debug('Sync completed!');
+
+                await this.telegram.sendMessage({
+                    chat_id: '-330731984',
+                    text: 'Sync completed! Soter CID: ' + JSON.stringify(soterResult.data)
+                }).toPromise();
             }
         } catch (e) {
             this.logger.error(e.message);
 
             if (e.status === 400) {
+                await this.telegram.sendMessage({
+                    chat_id: '-330731984',
+                    text: 'Error: ' + e.response.body.data
+                }).toPromise();
                 this.logger.error(e.response.body.data);
             }
         }

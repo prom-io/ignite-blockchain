@@ -12,6 +12,7 @@ async function bootstrap() {
     options: {
       client: {
         brokers: ['ignite-dds-kafka-server1:9092'],
+        // brokers: ['localhost:29092'],
       },
     },
   });
