@@ -65,7 +65,10 @@ In order to run Data Mart node inside Docker container, you need to do the follo
 - Create`.env` file in project's **root** directory and configure environmental variables. It is required to configure environmental variables 
 - While in project directory, run the following command:
 
-```docker-compose -f docker-compose-production.yml up --build or docker-compose -f docker-compose-production.yml up --build -d``` if you want to run the application in detached mode.
+```docker-compose -f docker-compose-production.yml up --build```
+or 
+```docker-compose -f docker-compose-production.yml up --build -d``` 
+if you want to run the application in detached mode.
 
 ## Current Stage of project
 
