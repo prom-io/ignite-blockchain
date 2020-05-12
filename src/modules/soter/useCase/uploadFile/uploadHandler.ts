@@ -5,7 +5,8 @@ import {MapService} from '../../map.service';
 import {SyncTime} from '../../../../model/syncTime.entity';
 // tslint:disable-next-line:no-var-requires
 const FileType = require('file-type');
-import { objectToBuffer, fileNameGenerate } from '../../utils';
+import {objectToBuffer, fileNameGenerate} from '../../utils';
+
 @Injectable()
 export class UploadHandler {
     private readonly logger = new Logger(UploadHandler.name);
@@ -13,7 +14,8 @@ export class UploadHandler {
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
-    ) {}
+    ) {
+    }
 
     public async handle(command: Command): Promise<void> {
         try {

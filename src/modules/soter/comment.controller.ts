@@ -3,9 +3,11 @@ import {AddCommentHandler} from './useCase/addComment/addComment.handler';
 import {Command as AddCommentCommand} from './useCase/addComment/command';
 import {FileFetcher} from './fetchers/file.fetcher';
 import {Ctx, KafkaContext, MessagePattern, Payload} from '@nestjs/microservices';
+
 @Controller()
 export class CommentController {
-    constructor(private readonly addCommentHandler: AddCommentHandler) {}
+    constructor(private readonly addCommentHandler: AddCommentHandler) {
+    }
 
     @MessagePattern('ignite.comments.add')
     public async createComment(@Payload() message: any, @Ctx() context: KafkaContext) {

@@ -11,7 +11,8 @@ export class RemoveSubscribeHandler {
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
-    ) {}
+    ) {
+    }
 
     public async handle(command: Command): Promise<void> {
         const fileName = command.userId + '/unsubscribes.json';

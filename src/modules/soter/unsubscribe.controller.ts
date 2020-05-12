@@ -5,7 +5,8 @@ import {Ctx, KafkaContext, MessagePattern, Payload} from '@nestjs/microservices'
 
 @Controller()
 export class UnsubscribeController {
-    constructor(private readonly addUnsubscribeHandler: RemoveSubscribeHandler) {}
+    constructor(private readonly addUnsubscribeHandler: RemoveSubscribeHandler) {
+    }
 
     @MessagePattern('ignite.unsubscribes.add')
     public async createUnsubscribe(@Payload() message: any, @Ctx() context: KafkaContext) {

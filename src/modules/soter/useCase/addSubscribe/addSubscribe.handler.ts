@@ -3,6 +3,7 @@ import {Command} from './command';
 import {ArchiveService} from '../../archive.service';
 import {MapService} from '../../map.service';
 import {objectToBuffer} from '../../utils';
+
 @Injectable()
 export class AddSubscribeHandler {
     private readonly logger = new Logger(AddSubscribeHandler.name);
@@ -10,7 +11,8 @@ export class AddSubscribeHandler {
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
-    ) {}
+    ) {
+    }
 
     public async handle(command: Command): Promise<void> {
         const fileName = command.userId + '/subscribes.json';

@@ -27,7 +27,7 @@ export class MapService {
             .createQueryBuilder()
             .update(SyncTime)
             .set(querySet)
-            .where('id = :id', { id })
+            .where('id = :id', {id})
             .execute();
     }
 

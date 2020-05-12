@@ -8,4 +8,5 @@ import {CidStorageService} from './cidStorage.service';
     providers: [Web3Service, CidStorageService],
     exports: [Web3Service, CidStorageService],
 })
-export class ContractModule {}
+export class ContractModule {
+}

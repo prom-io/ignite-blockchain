@@ -2,16 +2,18 @@ import {ConfigService} from '../../config/config.service';
 import {HttpService, Injectable} from '@nestjs/common';
 // tslint:disable-next-line:no-var-requires
 const TronWeb = require('tronweb');
-import { uuidv4, ts} from './utils';
+import {uuidv4, ts} from './utils';
 // tslint:disable-next-line:no-var-requires
 const FormData = require('form-data');
+
 @Injectable()
 export class SoterService {
 
     constructor(
         private readonly configService: ConfigService,
         private readonly httpService: HttpService,
-    ) {}
+    ) {
+    }
 
     public tronWebInstance() {
         return new TronWeb(this.configService.getTronConfig());

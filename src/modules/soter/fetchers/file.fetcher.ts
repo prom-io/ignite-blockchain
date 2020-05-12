@@ -7,7 +7,8 @@ export class FileFetcher {
     constructor(
         private readonly archiveService: ArchiveService,
         private readonly soterService: SoterService,
-    ) {}
+    ) {
+    }
 
     public async getById(cid: string, id: string) {
         const file = await this.soterService.getFileByCid(cid);

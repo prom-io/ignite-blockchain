@@ -6,7 +6,8 @@ import {Ctx, KafkaContext, MessagePattern, Payload} from '@nestjs/microservices'
 
 @Controller()
 export class UserController {
-    constructor(private readonly addUserHandler: AddUserHandler) {}
+    constructor(private readonly addUserHandler: AddUserHandler) {
+    }
 
     @MessagePattern('ignite.users.add')
     public async createUser(@Payload() message: any, @Ctx() context: KafkaContext) {

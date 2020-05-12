@@ -30,8 +30,8 @@ export class ArchiveHandler {
         });
 
         archive.pipe(output);
-        archive.file('/home/aibek/images/500x500.jpeg', { name: '500X500.jpeg' });
-        archive.file('/home/aibek/images/1.jpg', { name: '1.jpg' });
+        archive.file('/home/aibek/images/500x500.jpeg', {name: '500X500.jpeg'});
+        archive.file('/home/aibek/images/1.jpg', {name: '1.jpg'});
         await archive.finalize();
     }
 }
