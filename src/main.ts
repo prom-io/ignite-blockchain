@@ -3,6 +3,7 @@ import {ApplicationModule} from './app.module';
 import {Transport} from '@nestjs/microservices';
 
 async function bootstrap() {
+    // TODO Uncomment when need
     // @ts-ignore
     // process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
     // const app = await NestFactory.create(AppModule);

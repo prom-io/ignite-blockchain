@@ -1,7 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {SyncTime} from '../../model/syncTime.entity';
 import {getConnection, UpdateResult} from 'typeorm';
-import {SchedulerRegistry} from '@nestjs/schedule';
 
 @Injectable()
 export class MapService {

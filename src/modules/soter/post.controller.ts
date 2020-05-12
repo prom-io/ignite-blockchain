@@ -1,7 +1,6 @@
 import {Controller} from '@nestjs/common';
 import {AddPostHandler} from './useCase/addPost/addPost.handler';
 import {Command as AddPostCommand} from './useCase/addPost/command';
-import {FileFetcher} from './fetchers/file.fetcher';
 import {Ctx, KafkaContext, MessagePattern, Payload} from '@nestjs/microservices';
 
 @Controller()
