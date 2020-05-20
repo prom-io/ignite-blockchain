@@ -12,9 +12,7 @@
 ## Description
 
 Ignite is a decentralized social network, which allows everyone to share her/his mind freely via texts and media files. All the posts are distributed through Ethereum blockchain and stored immutable in Distributed Data Storage (DDS). 
-In this repo you can find DDS and blockchain part of Ignite.
-
-Our current version of DDS uses [Soter](https://gitlab.com/btfs_ignite). It stores all data we need to exchange between nodes. 
+In this repo you can find DDS and blockchain part of Ignite. Our current version of DDS uses [Soter](https://gitlab.com/btfs_ignite). It stores all data we need to exchange between nodes. 
 
 ## How to test
 
