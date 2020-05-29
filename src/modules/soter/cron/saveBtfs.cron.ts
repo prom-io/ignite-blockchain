@@ -1,28 +1,30 @@
-import {HttpService, Injectable, Logger} from '@nestjs/common';
+import {Injectable, Logger} from '@nestjs/common';
 import {Cron} from '@nestjs/schedule';
-import {SoterService} from './soter.service';
-import {ArchiveService} from './archive.service';
+import {SoterService} from '../soter.service';
+import {ArchiveService} from '../archive.service';
 import * as fs from 'fs';
-import {SyncTime} from '../../model/syncTime.entity';
-import {ConfigService} from '../../config/config.service';
-import {MapService} from './map.service';
+import {SyncTime} from '../../../model/syncTime.entity';
+import {ConfigService} from '../../../config/config.service';
+import {MapService} from '../map.service';
 import AdmZip = require('adm-zip');
-import {CidStorageService} from '../contracts/cidStorage.service';
-import {getConnection} from 'typeorm';
+import {CidStorageService} from '../../contracts/cidStorage.service';
 import {TelegramService} from 'nestjs-telegram';
+import {TelegramDebugService} from '../services/telegramDebug.service';
+import {CidBlockService} from '../../contracts/cidBlock.service';
+import {IgniteNodeService} from '../services/igniteNode.service';
 
 @Injectable()
-export class TasksService {
-    private readonly logger = new Logger(TasksService.name);
+export class SaveBtfsCron {
+    private readonly logger = new Logger(SaveBtfsCron.name);
 
     constructor(
         private readonly soterService: SoterService,
         private readonly archiveService: ArchiveService,
-        private readonly httpService: HttpService,
         private readonly configService: ConfigService,
         private readonly mapService: MapService,
-        private readonly cidStorageService: CidStorageService,
-        private readonly telegram: TelegramService,
+        private readonly cidBlockService: CidBlockService,
+        private readonly telegramDebugService: TelegramDebugService,
+        private readonly igniteNodeService: IgniteNodeService,
     ) {
     }
 
@@ -30,11 +32,11 @@ export class TasksService {
         name: 'sync',
     })
     async handleCronSync() {
-        const syncTimes = await SyncTime.findAllNotSynced();
-        await this.mapService.create();
         try {
+            const syncTimes = await SyncTime.findAllNotSynced();
+            await this.mapService.create();
             for (const syncTime of syncTimes) {
-                this.logger.debug('===================== SYNC =====================');
+                this.logger.debug('===================== START SYNC =====================');
                 const admZip = new AdmZip();
                 const zipPath = `./files/${syncTime.hash}.zip`;
                 const dirPath = this.archiveService.generateDirPath(syncTime.hash);
@@ -57,6 +59,7 @@ export class TasksService {
                 if (fs.existsSync(dirPath)) {
                     admZip.addLocalFolder(dirPath, '');
                 }
+
                 admZip.addFile('map.json', Buffer.from(JSON.stringify(syncTime.fileMap)));
                 admZip.addFile('entities.json', Buffer.from(JSON.stringify(entityMap)));
                 admZip.writeZip(zipPath);
@@ -65,53 +68,31 @@ export class TasksService {
                 }
                 const file = fs.readFileSync(zipPath);
                 this.logger.debug('Sync started!');
-                await this.telegram.sendMessage({
-                    chat_id: '-330731984',
-                    text: 'Sync started!'
-                }).toPromise();
+                await this.telegramDebugService.sendMessage('Sync started!');
                 const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
                 if (!soterResult.data.cid || soterResult.data.cid === '') {
-                    await this.telegram.sendMessage({
-                        chat_id: '-330731984',
-                        text: 'Error: Cid empty in btfs response!'
-                    }).toPromise();
+                    await this.telegramDebugService.sendMessage('Error: Cid empty in btfs response!');
                     throw new Error('Cid empty!');
                 }
-
-                const responseIgniteNode = await this.httpService.post(this.configService.getIgniteNodeAddress() + '/api/v3/btfs', {
-                    btfsCid: soterResult.data.cid,
-                    peerWallet: this.configService.get('PEER_WALLET'),
-                    peerIp: this.configService.get('PEER_IP'),
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }).toPromise();
+                const responseIgniteNode = await this.igniteNodeService.sendCid(soterResult.data.cid);
 
                 this.logger.debug('Zip file to Btfs saved!');
+                const tx = await this.cidBlockService.submitBlock(soterResult.data.cid);
                 syncTime.synced = true;
                 syncTime.btfsCid = soterResult.data.cid;
                 await syncTime.save();
-                const tx = await this.cidStorageService.setCid(soterResult.data.cid);
                 this.logger.debug(tx);
-
                 this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
                 this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
                 this.logger.debug('Sync completed!');
-
-                await this.telegram.sendMessage({
-                    chat_id: '-330731984',
-                    text: 'Sync completed! Soter CID: ' + JSON.stringify(soterResult.data)
-                }).toPromise();
+                await this.telegramDebugService.sendMessage('Sync completed! Soter CID: ' + JSON.stringify(soterResult.data));
+                this.logger.debug('===================== END SYNC =====================');
             }
         } catch (e) {
             this.logger.error(e.message);
 
             if (e.status === 400) {
-                await this.telegram.sendMessage({
-                    chat_id: '-330731984',
-                    text: 'Error: ' + e.response.body.data
-                }).toPromise();
+                await this.telegramDebugService.sendMessage('Error: ' + e.response.body.data);
                 this.logger.error(e.response.body.data);
             }
         }

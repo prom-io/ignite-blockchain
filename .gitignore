@@ -36,3 +36,4 @@ lerna-debug.log*
 .env
 production.env
 files
+local_docker

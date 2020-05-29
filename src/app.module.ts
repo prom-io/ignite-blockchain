@@ -5,6 +5,11 @@ import {SoterModule} from './modules/soter/soter.module';
 import { ConfigService } from './config/config.service';
 import {Connection} from 'typeorm';
 import {ScheduleModule} from '@nestjs/schedule';
+import {ConsoleModule} from 'nestjs-console';
+import {DbSyncEthereumCommand} from './modules/console/dbSyncEthereum.command';
+import {CidBlockService} from './modules/contracts/cidBlock.service';
+import {Web3Service} from './modules/contracts/web3.service';
+import {ConsoleScriptModule} from './modules/console/consoleScript.module';
 
 @Module({
   imports: [
@@ -16,6 +21,8 @@ import {ScheduleModule} from '@nestjs/schedule';
       ScheduleModule.forRoot(),
       ConfigModule,
       SoterModule,
+      ConsoleModule,
+      ConsoleScriptModule,
   ],
   controllers: [],
   providers: [],

@@ -14,7 +14,6 @@ import {LikeController} from './like.controller';
 import {AddLikeHandler} from './useCase/addLike/addLike.handler';
 import {SubscribeController} from './subscribe.controller';
 import {AddSubscribeHandler} from './useCase/addSubscribe/addSubscribe.handler';
-import {TasksService} from './TasksService';
 import {BtfsFetcher} from './fetchers/btfs.fetcher';
 import {MapService} from './map.service';
 import {UserController} from './user.controller';
@@ -28,6 +27,10 @@ import {ContractFetcher} from './fetchers/contract.fetcher';
 import {CommentController} from './comment.controller';
 import {AddCommentHandler} from './useCase/addComment/addComment.handler';
 import {TelegramModule} from 'nestjs-telegram';
+import {SaveBtfsCron} from './cron/saveBtfs.cron';
+import {IgniteNodeService} from './services/igniteNode.service';
+import {TelegramDebugService} from './services/telegramDebug.service';
+import {PlasmaSyncCron} from './cron/plasmaSync.cron';
 // tslint:disable-next-line:no-var-requires
 const https = require('https');
 @Module({
@@ -66,23 +69,26 @@ const https = require('https');
     CommentController,
   ],
   providers: [
-    MapService,
-    BtfsFetcher,
-    TasksService,
-    AddSubscribeHandler,
-    AddLikeHandler,
-    AddPostHandler,
-    FileFetcher,
-    ArchiveService,
-    SoterService,
-    UploadHandler,
-    ArchiveHandler,
-    UnzipHandler,
-    AddUserHandler,
-    RemoveLikeHandler,
-    RemoveSubscribeHandler,
-    ContractFetcher,
-    AddCommentHandler,
+      MapService,
+      BtfsFetcher,
+      SaveBtfsCron,
+      AddSubscribeHandler,
+      AddLikeHandler,
+      AddPostHandler,
+      FileFetcher,
+      ArchiveService,
+      SoterService,
+      UploadHandler,
+      ArchiveHandler,
+      UnzipHandler,
+      AddUserHandler,
+      RemoveLikeHandler,
+      RemoveSubscribeHandler,
+      ContractFetcher,
+      AddCommentHandler,
+      IgniteNodeService,
+      TelegramDebugService,
+      PlasmaSyncCron,
   ],
 })
 export class SoterModule {}

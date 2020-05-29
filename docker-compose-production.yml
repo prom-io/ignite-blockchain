@@ -10,17 +10,12 @@ services:
     dns:
       - 8.8.8.8
       - 4.4.4.4
-    env_file:
-      - production.env
-    environment:
-      - NODE_ENV=production
     networks:
       - kafka-net
     ports:
       - ${API_PORT}:3000
     depends_on:
       - ignite-dds-postgres
-      - ingite-dds-main_net
       - ignite-dds-zookeeper-server
     volumes:
       - /app/node_modules
@@ -91,23 +86,7 @@ services:
       - ${PGADMIN_PORT}:80
     depends_on:
       - ignite-dds-postgres
-  ingite-dds-main_net:
-    image: trufflesuite/ganache-cli:latest
-    ports:
-      - "8545:8545"
-    networks:
-      - kafka-net
-    volumes:
-      - ganache_data:/ganache_data
-    entrypoint:
-      - node
-      - /app/ganache-core.docker.cli.js
-      - --networkId
-      - '5555'
-      - -e
-      - '10000'
 volumes:
   kafka-server1-data:
   kafka-server2-data:
   ignite-dds-postgres:
-  ganache_data:

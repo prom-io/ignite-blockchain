@@ -18,7 +18,9 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:generate": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm"
+    "migration:generate": "./node_modules/.bin/ts-node ./node_modules/.bin/typeorm",
+    "console:dev": "ts-node -r tsconfig-paths/register src/console.ts",
+    "console": "node dist/console.js"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.8",
@@ -41,6 +43,7 @@
     "axios": "^0.19.2",
     "blob": "^0.1.0",
     "btfs-soter": "^1.0.5",
+    "commander": "^5.1.0",
     "dom": "^0.0.3",
     "dotenv": "^8.2.0",
     "file": "^0.2.2",
@@ -51,6 +54,7 @@
     "jsdom": "^16.2.2",
     "jsdom-global": "^3.0.2",
     "kafkajs": "^1.12.0",
+    "nestjs-console": "^3.0.5",
     "nestjs-telegram": "^1.1.2",
     "pg": "^8.0.2",
     "reflect-metadata": "^0.1.13",

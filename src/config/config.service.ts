@@ -3,7 +3,9 @@ import * as fs from 'fs';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import {SyncTime} from '../model/syncTime.entity';
 import {AbiItem} from 'web3-utils';
-
+import { cidStorageAbi } from '../modules/contracts/abi/cidStorage.abi';
+import { cidBlockAbi } from '../modules/contracts/abi/cidBlock.abi';
+import { rootChainAbi } from '../modules/contracts/abi/rootChain.abi';
 export class ConfigService {
     private readonly envConfig: { [key: string]: string };
 
@@ -40,80 +42,35 @@ export class ConfigService {
         };
     }
 
+    public getMainNetAddress(): string {
+        return this.get('MAIN_NET_DEFAULT_ADDRESS');
+    }
+
+    public getPrivateNetAddress(): string {
+        return this.get('PRIVATE_NET_DEFAULT_ADDRESS');
+    }
+
     public getCidStorageContractAbi(): AbiItem[] {
-        return [
-            {
-                'constant': true,
-                'inputs': [],
-                'name': 'cidCount',
-                'outputs': [
-                    {
-                        'name': '',
-                        'type': 'uint256'
-                    }
-                ],
-                'payable': false,
-                'stateMutability': 'view',
-                'type': 'function'
-            },
-            {
-                'constant': true,
-                'inputs': [
-                    {
-                        'name': '',
-                        'type': 'uint256'
-                    }
-                ],
-                'name': 'allCid',
-                'outputs': [
-                    {
-                        'name': '',
-                        'type': 'string'
-                    }
-                ],
-                'payable': false,
-                'stateMutability': 'view',
-                'type': 'function'
-            },
-            {
-                'anonymous': false,
-                'inputs': [
-                    {
-                        'indexed': false,
-                        'name': 'cidIndex',
-                        'type': 'uint256'
-                    },
-                    {
-                        'indexed': false,
-                        'name': 'cid',
-                        'type': 'string'
-                    }
-                ],
-                'name': 'CidSaved',
-                'type': 'event'
-            },
-            {
-                'constant': false,
-                'inputs': [
-                    {
-                        'name': 'cid',
-                        'type': 'string'
-                    }
-                ],
-                'name': 'setCid',
-                'outputs': [],
-                'payable': false,
-                'stateMutability': 'nonpayable',
-                'type': 'function'
-            }
-        ];
+        return cidStorageAbi;
     }
 
     public getCidStorageContractAddress(): string {
         return this.get('CID_STORAGE_CONTRACT_ADDRESS');
     }
 
-    public getDefaultGas(): object {
-        return {from: this.get('DEFAULT_ADDRESS'), gas: 1e6, gasPrice: 8 * 1e9};
+    public getCidBlockContractAbi(): AbiItem[] {
+        return cidBlockAbi;
+    }
+
+    public getCidBlockContractAddress(): string {
+        return this.get('CID_BLOCK_CONTRACT_ADDRESS');
+    }
+
+    public getRootChainContractAbi(): AbiItem[] {
+        return rootChainAbi;
+    }
+
+    public getRootChainContractAddress(): string {
+        return this.get('ROOT_CHAIN_CONTRACT_ADDRESS');
     }
 }
