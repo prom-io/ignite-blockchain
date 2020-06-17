@@ -15,7 +15,11 @@ export class Web3Service {
     }
 
     public httpInstancePrivateNet(): Web3 {
-        return new Web3(new Web3.providers.HttpProvider(this.config.get('PRIVATE_NETWORK_HOST')))
+        return new Web3(new Web3.providers.HttpProvider(this.config.get('PRIVATE_NETWORK_HOST')));
+    }
+
+    public httpInstanceBinanceSmartChain(): Web3 {
+        return new Web3(new Web3.providers.HttpProvider(this.config.get('BINANCE_SMART_CHAIN_NETWORK_HOST')));
     }
 
     public keccak256(value: string) {

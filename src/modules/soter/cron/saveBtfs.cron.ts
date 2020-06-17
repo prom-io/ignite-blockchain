@@ -12,6 +12,7 @@ import {TelegramService} from 'nestjs-telegram';
 import {TelegramDebugService} from '../services/telegramDebug.service';
 import {CidBlockService} from '../../contracts/cidBlock.service';
 import {IgniteNodeService} from '../services/igniteNode.service';
+import {CidChainService} from '../../contracts/binance/smartChain/cidChain.service';
 
 @Injectable()
 export class SaveBtfsCron {
@@ -25,6 +26,7 @@ export class SaveBtfsCron {
         private readonly cidBlockService: CidBlockService,
         private readonly telegramDebugService: TelegramDebugService,
         private readonly igniteNodeService: IgniteNodeService,
+        private readonly cidChainService: CidChainService,
     ) {
     }
 
@@ -78,6 +80,7 @@ export class SaveBtfsCron {
 
                 this.logger.debug('Zip file to Btfs saved!');
                 const tx = await this.cidBlockService.submitBlock(soterResult.data.cid);
+                await this.cidChainService.pushBlock(soterResult.data.cid);
                 syncTime.synced = true;
                 syncTime.btfsCid = soterResult.data.cid;
                 await syncTime.save();

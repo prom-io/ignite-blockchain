@@ -11,8 +11,8 @@ async function bootstrap() {
     transport: Transport.KAFKA,
     options: {
       client: {
-        brokers: ['ignite-dds-kafka-server1:9092'],
-        // brokers: ['localhost:29092'],
+        // brokers: ['ignite-dds-kafka-server1:9092'],
+        brokers: ['localhost:29092'],
       },
     },
   });

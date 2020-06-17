@@ -6,6 +6,8 @@ import {AbiItem} from 'web3-utils';
 import { cidStorageAbi } from '../modules/contracts/abi/cidStorage.abi';
 import { cidBlockAbi } from '../modules/contracts/abi/cidBlock.abi';
 import { rootChainAbi } from '../modules/contracts/abi/rootChain.abi';
+import { cidChainAbi } from '../modules/contracts/abi/cidChain.abi';
+
 export class ConfigService {
     private readonly envConfig: { [key: string]: string };
 
@@ -72,5 +74,17 @@ export class ConfigService {
 
     public getRootChainContractAddress(): string {
         return this.get('ROOT_CHAIN_CONTRACT_ADDRESS');
+    }
+
+    public getBinanceRootChainContractAddress(): string {
+        return this.get('BINANCE_ROOT_CHAIN_CONTRACT_ADDRESS');
+    }
+
+    public getCidChainContractAbi(): AbiItem[] {
+        return cidChainAbi;
+    }
+
+    public getCidChainContractAddress(): string {
+        return this.get('CID_CHAIN_CONTRACT_ADDRESS');
     }
 }
