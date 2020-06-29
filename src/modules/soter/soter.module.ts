@@ -32,6 +32,7 @@ import {IgniteNodeService} from './services/igniteNode.service';
 import {TelegramDebugService} from './services/telegramDebug.service';
 import {PlasmaSyncCron} from './cron/plasmaSync.cron';
 import {SmartChainSyncCron} from './cron/binance/smartChainSync.cron';
+import {ArweaveService} from '../arweave/arweave.service';
 // tslint:disable-next-line:no-var-requires
 const https = require('https');
 @Module({
@@ -90,7 +91,8 @@ const https = require('https');
       IgniteNodeService,
       TelegramDebugService,
       PlasmaSyncCron,
-      SmartChainSyncCron
+      SmartChainSyncCron,
+      ArweaveService
   ],
 })
 export class SoterModule {}

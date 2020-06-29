@@ -14,7 +14,7 @@ export class PlasmaSyncCron {
         private readonly rootChainService: RootChainService,
     ) {}
 
-    @Cron('* * * * *', {
+    @Cron('0 1 * * *', {
         name: 'sync_plasma',
     })
     async handleCronSync() {

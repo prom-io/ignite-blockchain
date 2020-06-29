@@ -14,7 +14,7 @@ export class SmartChainSyncCron {
         private readonly rootChainService: BinanceRootChainService,
     ) {}
 
-    @Cron('* * * * *', {
+    @Cron('0 1 * * *', {
         name: 'sync_binance_smart_chain',
     })
     async handleCronSync() {

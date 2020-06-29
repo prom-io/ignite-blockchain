@@ -26,6 +26,14 @@ export class ConfigService {
         };
     }
 
+    getTelegramDebug(): string {
+        const debug = this.get('TELEGRAM_DEBUG');
+        if(debug === undefined || debug === null) {
+            return 'development';
+        }
+        return debug;
+    }
+
     getIgniteNodeAddress(): string {
         return this.get('IGNITE_NODE_API');
     }

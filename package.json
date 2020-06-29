@@ -46,6 +46,7 @@
     "commander": "^5.1.0",
     "dom": "^0.0.3",
     "dotenv": "^8.2.0",
+    "env-decorator": "^1.0.0",
     "file": "^0.2.2",
     "file-type": "^14.1.4",
     "form-data": "^3.0.0",

@@ -11,6 +11,9 @@ export class SyncTime extends BaseEntity {
     @Column({name: 'btfs_cid', nullable: true})
     btfsCid: string;
 
+    @Column({name: 'arweave_hash', nullable: true})
+    arweaveHash: string;
+
     @Column({type: 'timestamp', name: 'created_at'})
     createdAt: Date;
 

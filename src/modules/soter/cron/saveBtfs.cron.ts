@@ -13,6 +13,7 @@ import {TelegramDebugService} from '../services/telegramDebug.service';
 import {CidBlockService} from '../../contracts/cidBlock.service';
 import {IgniteNodeService} from '../services/igniteNode.service';
 import {CidChainService} from '../../contracts/binance/smartChain/cidChain.service';
+import {ArweaveService} from '../../arweave/arweave.service';
 
 @Injectable()
 export class SaveBtfsCron {
@@ -20,6 +21,7 @@ export class SaveBtfsCron {
 
     constructor(
         private readonly soterService: SoterService,
+        private readonly arweaveService: ArweaveService,
         private readonly archiveService: ArchiveService,
         private readonly configService: ConfigService,
         private readonly mapService: MapService,
@@ -72,10 +74,17 @@ export class SaveBtfsCron {
                 this.logger.debug('Sync started!');
                 await this.telegramDebugService.sendMessage('Sync started!');
                 const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
+                const arweaveResult = await this.arweaveService.add(file, syncTime.hash + '.zip');
                 if (!soterResult.data.cid || soterResult.data.cid === '') {
                     await this.telegramDebugService.sendMessage('Error: Cid empty in btfs response!');
                     throw new Error('Cid empty!');
                 }
+
+                if(!arweaveResult.data.hash || arweaveResult.data.hash === '') {
+                    await this.telegramDebugService.sendMessage('Error: Arweave save error!');
+                    throw new Error('Arweave save error!');
+                }
+
                 const responseIgniteNode = await this.igniteNodeService.sendCid(soterResult.data.cid);
 
                 this.logger.debug('Zip file to Btfs saved!');
@@ -83,6 +92,7 @@ export class SaveBtfsCron {
                 await this.cidChainService.pushBlock(soterResult.data.cid);
                 syncTime.synced = true;
                 syncTime.btfsCid = soterResult.data.cid;
+                syncTime.arweaveHash = arweaveResult.data.hash;
                 await syncTime.save();
                 this.logger.debug(tx);
                 this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
