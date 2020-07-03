@@ -32,7 +32,7 @@ export class SaveBtfsCron {
     ) {
     }
 
-    @Cron('* * * * *', {
+    @Cron('*/5 * * * *', {
         name: 'sync',
     })
     async handleCronSync() {
