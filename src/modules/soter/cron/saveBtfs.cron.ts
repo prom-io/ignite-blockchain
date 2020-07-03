@@ -73,37 +73,38 @@ export class SaveBtfsCron {
                 const file = fs.readFileSync(zipPath);
                 this.logger.debug('Sync started!');
                 await this.telegramDebugService.sendMessage('Sync started!');
-                const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
+                // const soterResult = await this.soterService.add(file, syncTime.hash + '.zip');
                 const arweaveResult = await this.arweaveService.add(file, syncTime.hash + '.zip');
-                if (!soterResult.data.cid || soterResult.data.cid === '') {
-                    await this.telegramDebugService.sendMessage('Error: Cid empty in btfs response!');
-                    throw new Error('Cid empty!');
-                }
+                // if (!soterResult.data.cid || soterResult.data.cid === '') {
+                //     await this.telegramDebugService.sendMessage('Error: Cid empty in btfs response!');
+                //     throw new Error('Cid empty!');
+                // }
 
                 if(!arweaveResult.data.hash || arweaveResult.data.hash === '') {
                     await this.telegramDebugService.sendMessage('Error: Arweave save error!');
                     throw new Error('Arweave save error!');
                 }
 
-                const responseIgniteNode = await this.igniteNodeService.sendCid(soterResult.data.cid);
+                const responseIgniteNode = await this.igniteNodeService.sendCid(arweaveResult.data.hash);
 
                 this.logger.debug('Zip file to Btfs saved!');
-                const tx = await this.cidBlockService.submitBlock(soterResult.data.cid);
-                await this.cidChainService.pushBlock(soterResult.data.cid);
+                const tx = await this.cidBlockService.submitBlock(arweaveResult.data.hash);
+                await this.cidChainService.pushBlock(arweaveResult.data.hash);
                 syncTime.synced = true;
-                syncTime.btfsCid = soterResult.data.cid;
+                // syncTime.btfsCid = soterResult.data.cid;
                 syncTime.arweaveHash = arweaveResult.data.hash;
                 await syncTime.save();
                 this.logger.debug(tx);
-                this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
+                // this.logger.debug('Soter data: ' + JSON.stringify(soterResult.data));
+                this.logger.debug('Arweave data: ' + JSON.stringify(arweaveResult.data));
                 this.logger.debug('Ignite node response status: ' + String(responseIgniteNode.status));
                 this.logger.debug('Sync completed!');
-                await this.telegramDebugService.sendMessage('Sync completed! Soter CID: ' + JSON.stringify(soterResult.data));
+                await this.telegramDebugService.sendMessage('Sync completed! Arweave hash: ' + JSON.stringify(arweaveResult.data.hash));
                 this.logger.debug('===================== END SYNC =====================');
             }
         } catch (e) {
             this.logger.error(e.message);
-
+            await this.telegramDebugService.sendMessage('Error: ' + e.message);
             if (e.status === 400) {
                 await this.telegramDebugService.sendMessage('Error: ' + e.response.body.data);
                 this.logger.error(e.response.body.data);
