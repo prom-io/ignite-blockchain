@@ -6,7 +6,7 @@ COPY . .
 RUN yarn build
 
 FROM node:10
-RUN yarn add web3 nestjs-telegram
+RUN yarn add web3 nestjs-telegram nestjs-console commander
 
 WORKDIR /app
 COPY --from=builder /app ./
