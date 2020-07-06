@@ -32,7 +32,7 @@ export class SaveBtfsCron {
     ) {
     }
 
-    @Cron('*/5 * * * *', {
+    @Cron('*/3 * * * *', {
         name: 'sync',
     })
     async handleCronSync() {
@@ -55,10 +55,10 @@ export class SaveBtfsCron {
                     syncTime.entityMapComments,
                 );
 
-                if (Object.keys(syncTime.fileMap).length === 0) {
-                    await syncTime.remove();
-                    continue;
-                }
+                // if (Object.keys(syncTime.fileMap).length === 0) {
+                //     await syncTime.remove();
+                //     continue;
+                // }
 
                 if (fs.existsSync(dirPath)) {
                     admZip.addLocalFolder(dirPath, '');
@@ -79,7 +79,6 @@ export class SaveBtfsCron {
                 //     await this.telegramDebugService.sendMessage('Error: Cid empty in btfs response!');
                 //     throw new Error('Cid empty!');
                 // }
-
                 if(!arweaveResult.data.hash || arweaveResult.data.hash === '') {
                     await this.telegramDebugService.sendMessage('Error: Arweave save error!');
                     throw new Error('Arweave save error!');

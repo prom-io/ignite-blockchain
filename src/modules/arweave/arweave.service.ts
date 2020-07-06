@@ -11,7 +11,6 @@ export class ArweaveService {
     ) {}
 
     public async add(fileBuffer: Buffer, fileName: string) {
-        console.log(this.httpService);
         const formData = new FormData();
         formData.append('file', fileBuffer, fileName);
         return this.httpService.post(this.configService.get('ARWEAVE_HOST') + '/api/files', formData, {
