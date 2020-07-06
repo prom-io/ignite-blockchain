@@ -56,7 +56,7 @@ export class CidBlockService {
             to: this.configService.getCidBlockContractAddress(),
             data: pushBlockAbi,
             gas: estimateGas,
-        }, this.configService.getPrivateNetAddress());
+        }, this.configService.get('PRIVATE_NETWORK_ADDRESS_PRIVATE_KEY'));
         return this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     }
 
