@@ -28,14 +28,36 @@ export class CidBlockService {
         return {from, gas, gasPrice};
     }
 
+    // public async submitBlock(cid: string): Promise<any> {
+    //     const contract = this.contract();
+    //     await this.web3.eth.personal.unlockAccount(
+    //         this.configService.getPrivateNetAddress(),
+    //         this.configService.get('PRIVATE_NETWORK_ADDRESS_PASSWORD'),
+    //         600
+    //     );
+    //     return contract.methods.submitBlock(cid).send(this.transactionSendData());
+    // }
+
     public async submitBlock(cid: string): Promise<any> {
         const contract = this.contract();
-        await this.web3.eth.personal.unlockAccount(
-            this.configService.getPrivateNetAddress(),
-            this.configService.get('PRIVATE_NETWORK_ADDRESS_PASSWORD'),
-            600
+        const pushBlock = await contract.methods.submitBlock(cid);
+        const pushBlockAbi = pushBlock.encodeABI();
+
+        const estimateGas = await contract.methods.submitBlock(cid).estimateGas({
+            from: this.configService.getPrivateNetAddress()
+        });
+
+        const count = await this.web3.eth.getTransactionCount(
+            this.configService.getPrivateNetAddress()
         );
-        return contract.methods.submitBlock(cid).send(this.transactionSendData());
+        const signedTx = await this.web3.eth.accounts.signTransaction({
+            nonce: count,
+            from: this.configService.getPrivateNetAddress(),
+            to: this.configService.getCidBlockContractAddress(),
+            data: pushBlockAbi,
+            gas: estimateGas,
+        }, this.configService.getPrivateNetAddress());
+        return this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     }
 
     public async getPlasmaBlock(blockNumber: number) {
