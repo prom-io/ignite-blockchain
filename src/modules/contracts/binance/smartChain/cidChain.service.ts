@@ -27,19 +27,19 @@ export class CidChainService {
         const pushBlockAbi = pushBlock.encodeABI();
 
         const estimateGas = await contract.methods.pushBlock(cid).estimateGas({
-            from: this.configService.get('DEFAULT_ADDRESS')
+            from: this.configService.get('DEFAULT_ADDRESS_BINANCE')
         });
 
         const count = await this.web3.eth.getTransactionCount(
-            this.configService.get('DEFAULT_ADDRESS')
+            this.configService.get('DEFAULT_ADDRESS_BINANCE')
         );
         const signedTx = await this.web3.eth.accounts.signTransaction({
             nonce: count,
-            from: this.configService.get('DEFAULT_ADDRESS'),
+            from: this.configService.get('DEFAULT_ADDRESS_BINANCE'),
             to: this.configService.getCidChainContractAddress(),
             data: pushBlockAbi,
             gas: estimateGas,
-        }, this.configService.get('PRIVATE_KEY'));
+        }, this.configService.get('PRIVATE_KEY_BINANCE'));
         return this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     }
 }

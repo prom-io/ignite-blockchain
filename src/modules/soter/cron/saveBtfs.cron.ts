@@ -86,9 +86,9 @@ export class SaveBtfsCron {
 
                 const responseIgniteNode = await this.igniteNodeService.sendCid(arweaveResult.data.hash);
 
-                this.logger.debug('Zip file to Btfs saved!');
-                const tx = await this.cidBlockService.submitBlock(arweaveResult.data.hash);
+                this.logger.debug('Zip file to Arweave saved!');
                 await this.cidChainService.pushBlock(arweaveResult.data.hash);
+                const tx = await this.cidBlockService.submitBlock(arweaveResult.data.hash);
                 syncTime.synced = true;
                 // syncTime.btfsCid = soterResult.data.cid;
                 syncTime.arweaveHash = arweaveResult.data.hash;
