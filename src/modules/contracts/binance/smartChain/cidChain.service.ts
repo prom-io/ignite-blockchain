@@ -38,7 +38,7 @@ export class CidChainService {
             from: this.configService.get('DEFAULT_ADDRESS_BINANCE'),
             to: this.configService.getCidChainContractAddress(),
             data: pushBlockAbi,
-            gas: estimateGas,
+            gas: estimateGas + 10000,
         }, this.configService.get('PRIVATE_KEY_BINANCE'));
         return this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     }
