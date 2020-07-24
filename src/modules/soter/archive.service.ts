@@ -13,7 +13,8 @@ export class ArchiveService {
     private readonly entitiesName: string = 'entities.json';
     private zipPath: string = '';
 
-    constructor(private readonly mapService: MapService) {}
+    constructor(private readonly mapService: MapService) {
+    }
 
     public async addFile(fileBuffer: Buffer, mapId: string, filePath: string): Promise<void> {
         try {

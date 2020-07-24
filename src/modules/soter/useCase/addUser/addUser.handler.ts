@@ -2,7 +2,7 @@ import {Injectable, Logger} from '@nestjs/common';
 import {MapService} from '../../map.service';
 import {ArchiveService} from '../../archive.service';
 import {Command} from './command';
-import { objectToBuffer, fileNameGenerate } from '../../utils';
+import {objectToBuffer, fileNameGenerate} from '../../utils';
 
 @Injectable()
 export class AddUserHandler {
@@ -11,7 +11,8 @@ export class AddUserHandler {
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
-    ) {}
+    ) {
+    }
 
     public async handle(command: Command): Promise<void> {
         try {

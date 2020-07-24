@@ -30,59 +30,61 @@ import {AddCommentHandler} from './useCase/addComment/addComment.handler';
 import {TelegramModule} from 'nestjs-telegram';
 // tslint:disable-next-line:no-var-requires
 const https = require('https');
+
 @Module({
-  imports: [
-      ContractModule,
-      HttpModule.registerAsync({
-        imports: [ConfigModule],
-        useFactory: async (configService: ConfigService) => ({
-          baseURL: configService.get('SOTER_HOST'),
-          httpsAgent: new https.Agent({
-            rejectUnauthorized: false,
-          }),
-          headers: {
-            'Content-Type': 'multipart/form-data; charset=UTF-8',
-          },
+    imports: [
+        ContractModule,
+        HttpModule.registerAsync({
+            imports: [ConfigModule],
+            useFactory: async (configService: ConfigService) => ({
+                baseURL: configService.get('SOTER_HOST'),
+                httpsAgent: new https.Agent({
+                    rejectUnauthorized: false,
+                }),
+                headers: {
+                    'Content-Type': 'multipart/form-data; charset=UTF-8',
+                },
+            }),
+            inject: [ConfigService],
         }),
-        inject: [ConfigService],
-      }),
-      TelegramModule.forRootAsync({
-        useFactory: async (configService: ConfigService) => {
-          return {
-            botKey: configService.get('TELEGRAM_BOT_KEY')
-          };
-        },
-        inject: [ConfigService]
-      })
-  ],
-  controllers: [
-    UserController,
-    SubscribeController,
-    LikeController,
-    PostController,
-    FileController,
-    UnlikeController,
-    UnsubscribeController,
-    CommentController,
-  ],
-  providers: [
-    MapService,
-    BtfsFetcher,
-    TasksService,
-    AddSubscribeHandler,
-    AddLikeHandler,
-    AddPostHandler,
-    FileFetcher,
-    ArchiveService,
-    SoterService,
-    UploadHandler,
-    ArchiveHandler,
-    UnzipHandler,
-    AddUserHandler,
-    RemoveLikeHandler,
-    RemoveSubscribeHandler,
-    ContractFetcher,
-    AddCommentHandler,
-  ],
+        TelegramModule.forRootAsync({
+            useFactory: async (configService: ConfigService) => {
+                return {
+                    botKey: configService.get('TELEGRAM_BOT_KEY')
+                };
+            },
+            inject: [ConfigService]
+        })
+    ],
+    controllers: [
+        UserController,
+        SubscribeController,
+        LikeController,
+        PostController,
+        FileController,
+        UnlikeController,
+        UnsubscribeController,
+        CommentController,
+    ],
+    providers: [
+        MapService,
+        BtfsFetcher,
+        TasksService,
+        AddSubscribeHandler,
+        AddLikeHandler,
+        AddPostHandler,
+        FileFetcher,
+        ArchiveService,
+        SoterService,
+        UploadHandler,
+        ArchiveHandler,
+        UnzipHandler,
+        AddUserHandler,
+        RemoveLikeHandler,
+        RemoveSubscribeHandler,
+        ContractFetcher,
+        AddCommentHandler,
+    ],
 })
-export class SoterModule {}
+export class SoterModule {
+}

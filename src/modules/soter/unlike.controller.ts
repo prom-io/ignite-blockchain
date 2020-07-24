@@ -5,7 +5,8 @@ import {Ctx, KafkaContext, MessagePattern, Payload} from '@nestjs/microservices'
 
 @Controller()
 export class UnlikeController {
-    constructor(private readonly removeLikeHandler: RemoveLikeHandler) {}
+    constructor(private readonly removeLikeHandler: RemoveLikeHandler) {
+    }
 
     @MessagePattern('ignite.unlikes.add')
     public async createUnlike(@Payload() message: any, @Ctx() context: KafkaContext) {

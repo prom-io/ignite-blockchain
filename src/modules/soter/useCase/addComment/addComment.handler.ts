@@ -12,7 +12,8 @@ export class AddCommentHandler {
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
-    ) {}
+    ) {
+    }
 
     public async handle(command: Command): Promise<void> {
         const fileName = command.postId + '/comments.json';

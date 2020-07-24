@@ -1,6 +1,6 @@
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import {TypeOrmModuleOptions} from '@nestjs/typeorm';
 import {SyncTime} from '../model/syncTime.entity';
 import {AbiItem} from 'web3-utils';
 

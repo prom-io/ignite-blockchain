@@ -3,7 +3,8 @@ import {CidStorageService} from '../../contracts/cidStorage.service';
 
 @Injectable()
 export class ContractFetcher {
-    constructor(private readonly cidStorageService: CidStorageService) {}
+    constructor(private readonly cidStorageService: CidStorageService) {
+    }
 
     public async getAllCid(): Promise<any> {
         const allCid = [];

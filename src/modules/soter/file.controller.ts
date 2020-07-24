@@ -5,7 +5,8 @@ import {Ctx, KafkaContext, MessagePattern, Payload} from '@nestjs/microservices'
 
 @Controller()
 export class FileController {
-    constructor(private readonly uploadHandler: UploadHandler) {}
+    constructor(private readonly uploadHandler: UploadHandler) {
+    }
 
     @MessagePattern('ignite.files.add')
     public async uploadFile(@Payload() message: any, @Ctx() context: KafkaContext) {

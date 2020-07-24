@@ -1,5 +1,5 @@
-import { Module, Global } from '@nestjs/common';
-import { ConfigService } from './config.service';
+import {Module, Global} from '@nestjs/common';
+import {ConfigService} from './config.service';
 
 @Global()
 @Module({
@@ -11,4 +11,5 @@ import { ConfigService } from './config.service';
     ],
     exports: [ConfigService],
 })
-export class ConfigModule {}
+export class ConfigModule {
+}

@@ -3,8 +3,9 @@ import {ArchiveService} from '../../archive.service';
 import {Command} from './command';
 import {SyncTime} from '../../../../model/syncTime.entity';
 import {MapService} from '../../map.service';
-import { objectToBuffer, fileNameGenerate } from '../../utils';
+import {objectToBuffer, fileNameGenerate} from '../../utils';
 import {getConnection} from 'typeorm';
+
 @Injectable()
 export class AddPostHandler {
     private readonly logger = new Logger(AddPostHandler.name);
@@ -12,7 +13,8 @@ export class AddPostHandler {
     constructor(
         private readonly mapService: MapService,
         private readonly archiveService: ArchiveService,
-    ) {}
+    ) {
+    }
 
     public async handle(command: Command) {
         const connection = getConnection();
