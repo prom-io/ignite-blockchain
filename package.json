@@ -63,7 +63,7 @@
     "rxjs": "^6.5.5",
     "trongrid": "^1.2.6",
     "tronweb": "^2.10.1",
-    "typeorm": "^0.2.24",
+    "typeorm": "^0.2.25",
     "web3": "^1.2.6"
   },
   "devDependencies": {
